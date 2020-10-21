@@ -1,4 +1,7 @@
 import axios from "axios";
+import setAuthToken from '../utils/setAuthToken'
+import authReducer from '../reducers/authReducer'
+import { useReducer, useDispatch } from 'react'
 
 import {
   REGISTER_SUCCESS,
@@ -9,23 +12,28 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
-} from "../types";
+} from "./types";
 
+// const initialState = {
+//   token: localStorage.getItem("token"),
+//   user: null,
+//   isAuthenticated: null,
+//   loading: true,
+//   error: null,
+// };
+// const [state, dispatch] = useReducer(authReducer, initialState);
 // Load User
-export const loadUser = async () => {
+export const loadUser = (history) =>  async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
-  try {
-    const res = await axios.get("/api/auth");
-    dispatch({ type: USER_LOADED, payload: res.data });
-  } catch (error) {
-    dispatch({ type: AUTH_ERROR });
-  }
+  const load = await axios.get('/api/auth')
+  dispatch({type:'USER_LOADED', payload: load.data})
+  history.push('/')
 };
 
 // Register User
-export const register = async (formData) => {
+export const register = (formData) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -42,13 +50,13 @@ export const register = async (formData) => {
   } catch (error) {
     dispatch({
       type: REGISTER_FAIL,
-      payload: error.response.data.msg,
+      payload: error.response.data.message,
     });
   }
 };
 
 // Login User
-export const login = async (formData) => {
+export const login = (formData) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -59,24 +67,22 @@ export const login = async (formData) => {
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
-    });
-
-    loadUser();
+    });  
   } catch (error) {
     dispatch({
       type: LOGIN_FAIL,
-      payload: error.response.data.msg,
+      payload: error.message,
     });
   }
 };
 
 // Logout
-export const logout = () => {
+export const logout = () => async(dispatch) => {
   dispatch({ type: LOGOUT });
 };
 
 // Clear Errors
-export const clearErrors = () => {
+export const clearErrors = (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
 };
 

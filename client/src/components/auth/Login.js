@@ -6,19 +6,23 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
 import { connect } from "react-redux";
+import { login, loadUser, clearErrors } from '../../actions/authActions'
+import { setAlert, removeAlert } from '../../actions/alertsActions'
 
-const Login = (props) => {
+const Login = ({history,login, loadUser, clearErrors, error, isAuthenticated}) => {
     useEffect(() => {
-        if (isAuthenticated) {
-          props.history.push("/");
-        }
-    
+        if(!isAuthenticated){
+          loadUser(history)
+        }  console.log("not") 
+  
         if (error === "Invalid Credentials") {
           setAlert(error, "danger");
           clearErrors();
         }
         // eslint-disable-next-line
-      }, [error, isAuthenticated, props.history]);
+      }, [error, isAuthenticated, history]);
+    
+    
 
       const [user, setUser] = useState({
         email: "",
@@ -32,7 +36,7 @@ const Login = (props) => {
         if( email === '' || password === ''){
             setAlert("Please fill in all fields", 'danger')
         } else {
-            login({email, password})
+            login({email, password}, history)
         }
         console.log("Login submit");
       };
@@ -40,7 +44,7 @@ const Login = (props) => {
         <div className="form-container">
           <h1>
             Account <span className="text-primary">Login</span>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} >
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -72,5 +76,12 @@ const Login = (props) => {
       );
     };
 
+    const mapStateToProps = (state) => ({
+      
+      isAuthenticated: state.auth.isAuthenticated
+      
+      });
 
-export default Login
+
+
+export default connect(mapStateToProps,{ login, loadUser }) (Login)

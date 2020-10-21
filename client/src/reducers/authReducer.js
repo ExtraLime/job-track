@@ -7,17 +7,31 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
-} from "../types";
+} from "../actions/types";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
+
 const initialState = user
-  ? { isAuthenticated: true, user }
-  : { isAuthenticated: false, user: null };
+  ? {
+      token: localStorage.getItem("token"),
+      user: user ? user : null,
+      isAuthenticated: true,
+      loading: true,
+      error: null,
+    }
+  : {
+      token: localStorage.getItem("token"),
+      user: user ? user : null,
+      isAuthenticated: false,
+      loading: true,
+      error: null,
+    };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case USER_LOADED:
+      console.log(action, action.payload);
       return {
         ...state,
         isAuthenticated: true,
@@ -25,7 +39,9 @@ export default (state = initialState, action) => {
         user: action.payload,
       };
     case LOGIN_SUCCESS:
+      console.log(action);
     case REGISTER_SUCCESS:
+      console.log(action, action.payload);
       localStorage.setItem("token", action.payload.token);
       return {
         ...state,
@@ -44,7 +60,7 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loading: false,
         user: null,
-        error: action.payload,
+        error: action.payload || "Error",
       };
     case CLEAR_ERRORS:
       return {
