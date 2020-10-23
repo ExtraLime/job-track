@@ -1,6 +1,8 @@
 import React, { useEffect,Fragment } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import { loadUser } from './actions/authActions'
 import Home from './components/pages/Home';
 import PrivateRoute from './components/routing/PrivateRoute'
 import { Provider } from 'react-redux';
@@ -15,16 +17,18 @@ import './App1.css';
 
 const App = () => {
   useEffect(() => M.AutoInit())//eslint-disable-next-line);
+  
+
   return (
     <Provider store={store}>
       <Router>
-            <Fragment>
-              <div className="container">
+            <Fragment>              
                 <Switch>
                 <PrivateRoute exact path="/" component={Home}></PrivateRoute> 
                   <Route exact path="/login" component={Login}></Route>
-                </Switch>
-              </div>
+                  <Route exact path="/register" component={Register}></Route>
+
+                </Switch>           
             </Fragment>
           </Router>
     </Provider>

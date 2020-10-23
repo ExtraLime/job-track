@@ -1,7 +1,7 @@
 import axios from "axios";
 import setAuthToken from '../utils/setAuthToken'
-import authReducer from '../reducers/authReducer'
-import { useReducer, useDispatch } from 'react'
+import { Redirect } from 'react-router-dom'
+import React from 'react'
 
 import {
   REGISTER_SUCCESS,
@@ -26,14 +26,19 @@ import {
 export const loadUser = (history) =>  async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
-  }
-  const load = await axios.get('/api/auth')
-  dispatch({type:'USER_LOADED', payload: load.data})
-  history.push('/')
-};
+  
+  try {
+    const load = await axios.get('/api/auth')
+    dispatch({type:'USER_LOADED', payload: load.data})
+    history.push('/')
+  } catch (error) {
+    console.log(error)
+    return <Redirect to='/login'/>
+  }}}
+
 
 // Register User
-export const register = (formData) => async (dispatch) => {
+export const register = (formData, history) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -45,8 +50,7 @@ export const register = (formData) => async (dispatch) => {
       type: REGISTER_SUCCESS,
       payload: res.data,
     });
-
-    loadUser();
+    loadUser(history);
   } catch (error) {
     dispatch({
       type: REGISTER_FAIL,
@@ -68,6 +72,7 @@ export const login = (formData) => async (dispatch) => {
       type: LOGIN_SUCCESS,
       payload: res.data,
     });  
+    loadUser();
   } catch (error) {
     dispatch({
       type: LOGIN_FAIL,
