@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
+// import Form from "react-validation/build/form";
+// import Input from "react-validation/build/input";
+// import CheckButton from "react-validation/build/button";
 
 import { connect } from "react-redux";
 import { register, loadUser, clearErrors } from "../../actions/authActions";
@@ -37,7 +37,7 @@ const Register = (props) => {
         password,
       });
       
-    }props.loadUser();
+    }
   };
   return (
     <div className="container">

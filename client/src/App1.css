@@ -21,3 +21,7 @@
     align-self: center;
     justify-self: center;
 }
+
+li {
+    display: flex
+}
