@@ -6,19 +6,31 @@ import { logout } from '../../actions/authActions'
 
 
 
-const Navbar = ({ title, icon, logout,logoutMsg, isAuthenticated, user }) => {
+const Navbar = ({ title, icon, logout, isAuthenticated, user }) => {
 
 
   const onLogout = () => {
       logout();
   }
+  const adminLinks = (
+    <Fragment>
+      <li style={{marginRight:"15px"}}> <i className='material-icons left'>person</i>Hello {user && user.name}</li><span>  </span>
+  <li><i className='material-icons left'>people</i>Users</li>
+      <li><i className='material-icons left'>network</i>Contractors</li>
 
-  const authLinks = (
+      <li>
+        <a onClick={onLogout} href="#!">
+          <i className="material-icons left">logout</i>Logout
+        </a>
+      </li>
+    </Fragment>
+  );
+  const userLinks = (
     <Fragment>
       <li> <i className='material-icons'>person</i> Hello {user && user.name} </li>
       <li>
         <a onClick={onLogout} href="#!">
-          <i className="material-icons">logout</i>{logoutMsg}
+          <i className="material-icons left">logout</i>Logout
         </a>
       </li>
     </Fragment>
@@ -44,9 +56,9 @@ const Navbar = ({ title, icon, logout,logoutMsg, isAuthenticated, user }) => {
     <div className="navbar-fixed">
       <nav>
       <div className="nav-wrapper green">
-        <a href="#" className="brand-logo left">{title} <i className='material-icons'>work</i></a>
+        <a href="/" className="brand-logo left">{title} <i className='material-icons right'>work</i></a>
         <ul id="nav-mobile" className="right">
-        {isAuthenticated ? authLinks : guestLinks}
+        {isAuthenticated && user && user.role === 'admin' ? adminLinks : isAuthenticated ? userLinks:guestLinks}
         </ul>
       </div>
     </nav>
@@ -67,6 +79,6 @@ Navbar.defaultProps = {
 const mapStateToProps = (state) => ({
     isAuthenticated : state.auth.isAuthenticated,
     user : state.auth.user,
-    logoutMsg: 'Logout'
+    
 })
 export default connect(mapStateToProps, { logout })(Navbar);

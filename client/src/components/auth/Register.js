@@ -23,8 +23,9 @@ const Register = (props) => {
     password: "",
     name: "",
     password2: "",
+    role: "",
   });
-  const { name, email, password, password2 } = user;
+  const { name, email, role, password, password2 } = user;
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
   const onSubmit = (e) => {
@@ -38,6 +39,7 @@ const Register = (props) => {
         name,
         email,
         password,
+        role
       });
     }
   };
@@ -106,6 +108,26 @@ const Register = (props) => {
             />
           </div>
         </div>
+        <div className="inrow">
+        <div className="row input-field">
+        <select
+            name="role"
+            value='Select Account Type'
+            className="row input-field col s12"
+            onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
+          >
+             <option value='Select Account Type' default disabled >
+             Select Account Type{" "}
+            </option>
+            <option value="user" >
+              User{" "}
+            </option>
+            <option value="contractor" >
+              Contractor{" "}
+            </option>          
+          </select>
+          </div>
+        </div>
 
         <button
           type="submit"
@@ -120,8 +142,6 @@ const Register = (props) => {
     </div>
   );
 };
-
-const styles = {};
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,

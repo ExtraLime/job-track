@@ -7,7 +7,6 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   USER_LOADED,
-  AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
@@ -21,7 +20,7 @@ export const loadUser = (history) =>  async (dispatch) => {
   
   try {
     const load = await axios.get('/api/auth')
-    dispatch({type:'USER_LOADED', payload: load.data})
+    dispatch({type:USER_LOADED, payload: load.data})
     history.push('/')
   } catch (error) {
     console.log(error)

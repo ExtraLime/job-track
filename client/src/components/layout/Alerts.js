@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { connect } from 'react-redux'
 
 const Alerts = (props) => {
   
   return (
-    props.alerts &&
+    props.alerts.length > 0 &&
     props.alerts.map((alert) => (
         <div className="alertRow">
       <div key={alert.id} className={`alert alert-${alert.type}`}>

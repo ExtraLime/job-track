@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 import { login, loadUser, clearErrors } from "../../actions/authActions";
-import { setAlert, removeAlert } from "../../actions/alertsActions";
+import { setAlert } from "../../actions/alertsActions";
 
 const Login = ({
   history,
@@ -12,14 +12,10 @@ const Login = ({
   clearErrors,
   error,
   isAuthenticated,
-  setAlert
+  setAlert,
 }) => {
   useEffect(() => {
-    if (isAuthenticated) {
       loadUser(history);
-    }
-    console.log("not");
-
     if (error === "Invalid Credentials") {
       setAlert(error, "danger");
       clearErrors();
@@ -89,7 +85,9 @@ const Login = ({
           Login
         </button>
       </form>
-      <span style={{margin:"20px"}}>New Here? <Link to='/register' >Register </Link>for free</span>
+      <span style={{ margin: "20px" }}>
+        New Here? <Link to="/register">Register </Link>for free
+      </span>
     </div>
   );
 };
@@ -97,7 +95,12 @@ const Login = ({
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   alerts: state.alerts,
-  error: state.auth.error
+  error: state.auth.error,
 });
 
-export default connect(mapStateToProps, { clearErrors,login, loadUser, setAlert })(Login);
+export default connect(mapStateToProps, {
+  clearErrors,
+  login,
+  loadUser,
+  setAlert,
+})(Login);

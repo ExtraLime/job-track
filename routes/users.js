@@ -8,8 +8,9 @@ const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 
+// @desc  REGISTER A USER
+
 // @route POST api/users
-// @desc  Register a user
 // @access  Public
 router.post(
   "/",
@@ -26,7 +27,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     try {
       let user = await User.findOne({ email });
 
@@ -40,7 +41,7 @@ router.post(
         name,
         email,
         password,
-        role: "user",
+        role
       });
 
       const salt = await bcrypt.genSalt(10);

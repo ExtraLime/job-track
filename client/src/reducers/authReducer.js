@@ -31,7 +31,6 @@ const initialState = user
 export default (state = initialState, action) => {
   switch (action.type) {
     case USER_LOADED:
-      console.log(action, action.payload);
       return {
         ...state,
         isAuthenticated: true,
@@ -39,9 +38,7 @@ export default (state = initialState, action) => {
         user: action.payload,
       };
     case LOGIN_SUCCESS:
-      console.log(action);
     case REGISTER_SUCCESS:
-      console.log(action, action.payload);
       localStorage.setItem("token", action.payload.token);
       return {
         ...state,
