@@ -14,14 +14,6 @@ import {
   CLEAR_ERRORS,
 } from "./types";
 
-// const initialState = {
-//   token: localStorage.getItem("token"),
-//   user: null,
-//   isAuthenticated: null,
-//   loading: true,
-//   error: null,
-// };
-// const [state, dispatch] = useReducer(authReducer, initialState);
 // Load User
 export const loadUser = (history) =>  async (dispatch) => {
   if (localStorage.token) {
@@ -51,10 +43,11 @@ export const register = (formData, history) => async (dispatch) => {
       payload: res.data,
     });
     loadUser(history);
-  } catch (error) {
+  } catch (error) { 
+    console.log(error.response.data.msg);
     dispatch({
       type: REGISTER_FAIL,
-      payload: error.response.data.message,
+      payload: error.response.data.msg,
     });
   }
 };
@@ -76,7 +69,7 @@ export const login = (formData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: LOGIN_FAIL,
-      payload: error.message,
+      payload: error.response.data.msg,
     });
   }
 };
@@ -87,7 +80,7 @@ export const logout = () => async(dispatch) => {
 };
 
 // Clear Errors
-export const clearErrors = (dispatch) => {
+export const clearErrors = () => (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
 };
 

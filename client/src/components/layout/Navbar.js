@@ -6,7 +6,7 @@ import { logout } from '../../actions/authActions'
 
 
 
-const Navbar = ({ title, icon, logout, isAuthenticated, user }) => {
+const Navbar = ({ title, icon, logout,logoutMsg, isAuthenticated, user }) => {
 
 
   const onLogout = () => {
@@ -18,8 +18,7 @@ const Navbar = ({ title, icon, logout, isAuthenticated, user }) => {
       <li> <i className='material-icons'>person</i> Hello {user && user.name} </li>
       <li>
         <a onClick={onLogout} href="#!">
-          <i className="material-icons">logout
-          </i>Logout
+          <i className="material-icons">logout</i>{logoutMsg}
         </a>
       </li>
     </Fragment>
@@ -67,6 +66,7 @@ Navbar.defaultProps = {
 
 const mapStateToProps = (state) => ({
     isAuthenticated : state.auth.isAuthenticated,
-    user : state.auth.user
+    user : state.auth.user,
+    logoutMsg: 'Logout'
 })
 export default connect(mapStateToProps, { logout })(Navbar);

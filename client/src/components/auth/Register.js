@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import Form from "react-validation/build/form";
-// import Input from "react-validation/build/input";
-// import CheckButton from "react-validation/build/button";
+import { Link } from 'react-router-dom'
+
 
 import { connect } from "react-redux";
 import { register, loadUser, clearErrors } from "../../actions/authActions";
@@ -12,8 +11,12 @@ const Register = (props) => {
     if (props.isAuthenticated) {
       props.loadUser(props.history);
     }
+    if (props.error === "User already exists. Please login.") {
+      props.setAlert(props.error, "danger");
+      props.clearErrors();
+    }
     // eslint-disable-next-line
-  }, [props.isAuthenticated, props.history]);
+  }, [props.error, props.isAuthenticated, props.history]);
 
   const [user, setUser] = useState({
     email: "",
@@ -27,87 +30,107 @@ const Register = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (name === "" || email === "" || password === "") {
-      setAlert("Please fill in all fields", "danger");
+      props.setAlert("Please fill in all fields", "danger");
     } else if (password !== password2) {
-      setAlert("Passwords must match", "danger");
+      props.setAlert("Passwords must match", "danger");
     } else {
       props.register({
         name,
         email,
         password,
       });
-      
     }
   };
   return (
     <div className="container">
-      <h1>
-        Account <span className="text-secondary center">Register</span>
-      </h1>
-      <form onSubmit={onSubmit} className="col s12">
-        <div className="row input-field">
-          <label htmlFor="name">Name</label>
-          <input
-            className="input-field col s6"
-            type="text"
-            name="name"
-            value={name}
-            onChange={onChange}
-            required
-            data-length="10"
-          />
+      <h4>
+        Job-Tracker <span className="text-secondary center">Registration</span>
+      </h4>
+      <form onSubmit={onSubmit} className="form-container">
+        <div className="inrow">
+          <div className="row input-field">
+            <label htmlFor="name">Name</label>
+            <input
+              className="validate input-field col s12"
+              type="text"
+              name="name"
+              value={name}
+              onChange={onChange}
+              required
+
+              // data-length="10"
+            />
+          </div>
         </div>
-        <div className="row input-field">
-          <label htmlFor="email">Email</label>
-          <input
-            className="input-field col s6"
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-            data-length="10"
-          />
+        <div className="inrow">
+          <div className="row input-field">
+            <label htmlFor="email">Email</label>
+            <input
+              className="validate input-field col s12"
+              type="email"
+              name="email"
+              value={email}
+              onChange={onChange}
+              required
+              // data-length="10"
+            />
+          </div>
         </div>
-        <div className="row input-field">
-          <label htmlFor="password">Password</label>
-          <input
-            className="input-field col s6"
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-            minLength="8"
-            data-length="10"
-          />
+        <div className="inrow">
+          <div className="row input-field">
+            <label htmlFor="password">Password</label>
+            <input
+              className="validate input-field col s12"
+              type="password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              required
+              minLength="8"
+              // data-length="10"
+            />
+          </div>
         </div>
-        <div className="row input-field">
-          <label htmlFor="password2">Confirm Password</label>
-          <input
-            className="input-field col s6"
-            type="password"
-            name="password2"
-            value={password2}
-            onChange={onChange}
-            required
-            minLength="8"
-            data-length="10"
-          />
+        <div className="inrow">
+          <div className="row input-field">
+            <label htmlFor="password2">Confirm Password</label>
+            <input
+              className="validate input-field col s12"
+              type="password"
+              name="password2"
+              value={password2}
+              onChange={onChange}
+              required
+              minLength="8"
+              // data-length="10"
+            />
+          </div>
         </div>
 
-        <input
+        <button
           type="submit"
           value="Register"
-          className="btn btn-primary btn-block"
-        />
+          name="action"
+          className="waves-effect waves-light btn-large green"
+        >
+          Register
+        </button>
       </form>
+      <span style={{margin:"20px"}}>Already Registered? <Link to='/login'> Login Here</Link></span>
     </div>
   );
 };
 
+const styles = {};
+
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  error: state.auth.error,
 });
 
-export default connect(mapStateToProps, { register, loadUser })(Register);
+export default connect(mapStateToProps, {
+  clearErrors,
+  setAlert,
+  register,
+  loadUser,
+})(Register);

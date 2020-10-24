@@ -7,21 +7,37 @@
     --success-color: #28a745;
   }
 
+.inrow {
+    align-content: center;
+    display:flex;    
+}
 
+.alertRow {
+    justify-content:center;
+    display:flex;    
+}
 
 .container {
-    left:auto;
-    right:auto;
-    display:block;
-    
+    text-align:center
+}
 
+.form-container {
+    margin:30px
+}
+
+.alert {
+    padding: 0.7rem;
+    margin: 1rem 0;
+    opacity: 0.9;
+    background: var(--light-color);
+    color: #333;
   }
 
-.row {
-    align-self: center;
-    justify-self: center;
-}
-
-li {
-    display: flex
-}
+  .alert-primary {
+    background: var(--primary-color);
+    color: #fff;
+  }
+  .alert-danger {
+    background: var(--danger-color);
+    color: #fff;
+  }
