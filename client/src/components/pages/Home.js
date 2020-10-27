@@ -1,27 +1,32 @@
-import React from "react";
+import React, { Fragment, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../../actions/authActions";
+import Dashboard  from '../layout/Dashboard'
 
-const Home = ({ user, logout }) => {
+const Home = (props) => {
+    useEffect(() => {
+        if(!props.isAuthenticated){
+            props.logout();
+        }
+    });
+
+    
+
+
   const onLogout = () => {
-    logout();
+    props.logout();
   };
+
   return (
-    <>
-      HI {user.name}
-      <Link to="/login">go to Login </Link>
-      <Link to="/register">Register </Link>
-      <a onClick={onLogout} href="#!">
-        <i className="fas fa-sign-out-alt">
-          <span className="hide-sm">Logout</span>
-        </i>
-      </a>
-    </>
+    <Fragment>
+      <Dashboard />
+      </Fragment>
   );
 };
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps, { logout })(Home);

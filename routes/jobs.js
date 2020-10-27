@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fileUpload = require('express-fileupload');
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
@@ -38,7 +39,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, dateOpened, dueDate, content, files, links, closeDate } = req.body;
+    const { title, dateOpened, dueDate, content, files, filesData, links, closeDate } = req.body;
 
     try {
       newJob = new Job({
@@ -111,5 +112,25 @@ router.delete("/:id", auth, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+router.post('/fileUpload', async (req, res) => {
+
+  if (!req.files) {
+      return res.status(500).send({ msg: "file is not found" })
+  }
+      // accessing the file
+  const myFile = req.files.file;
+
+  //  mv() method places the file inside public directory
+  myFile.mv(`${__dirname}/../client/files/${myFile.name}`, function (err) {
+      if (err) {
+          console.log(err)
+          return res.status(500).send({ msg: "Error occured" });
+      }
+      // returing the response with file path and name
+      return res.send({name: myFile.name, path: `${__dirname}/../client/files/${myFile.name}`});
+  });
+})
+
 
 module.exports = router;

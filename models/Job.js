@@ -18,6 +18,9 @@ const JobSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    urgent: {
+type:Boolean
+    },
     content: {
         type: String,
         required: true
