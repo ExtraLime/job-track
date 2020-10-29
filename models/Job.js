@@ -34,6 +34,16 @@ const JobSchema = mongoose.Schema({
     type: Array,
     required: false,
   },
+  status: {
+      type:String,
+      required: true,
+      default: "NEW"
+  },
+  contractor:{
+      type: mongoose.Schema.Types.ObjectId,
+      default: "NOT ASSIGNED",
+      ref:'users'
+  },
   closeDate: {
     type: String,
     required: false,

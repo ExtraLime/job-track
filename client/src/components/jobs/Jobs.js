@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { getJobs } from "../../actions/jobActions";
 import JobItem from "./JobItem";
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from '../layout/ActionButton'
+import { v4 as uuid} from 'uuid'
+import AddJobModal from "../jobs/AddJobModal";
+import EditJobModal from "../jobs/EditJobModal";
 
 
 const Jobs = ({ jobs, getJobs }) => {
@@ -12,6 +15,12 @@ const Jobs = ({ jobs, getJobs }) => {
     //eslint-disable-next-line
   }, []);
   return (
+      <Fragment>
+          <AddJobModal />
+          <EditJobModal />
+
+      <div className="row">
+          <div className="col s6">
     <ul className="collection with-headers">
       
       <li className="collection-header">
@@ -22,9 +31,12 @@ const Jobs = ({ jobs, getJobs }) => {
       {!jobs.loading && jobs.jobs.length === 0 ? (
         <p>No Jobs to show...</p>
       ) : jobs.jobs.msg? (<p>{jobs.jobs.msg}</p>):(
-        jobs.jobs.map((job) => <JobItem job={job} key={job.id} />)
+        jobs.jobs.map((job) => <JobItem job={job} key={job._id} />)
       )}
     </ul>
+    </div>
+      </div>
+      </Fragment>
   );
 };
 

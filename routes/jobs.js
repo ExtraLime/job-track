@@ -64,12 +64,12 @@ router.put("/:id", auth, async (req, res) => {
   const { title, dateOpened, dueDate, content, files, links, closeDate } = req.body;
 
   // Build contact object
-  const jonFields = {};
-  if (title) jonFields.title = title;
-  if (content) jonFields.content = content;
-  if (files) jonFields.files = files;
-  if (links) jonFields.links = links;
-  if (dueDate) jonFields.dueDate = dueDate;
+  const jobFields = {};
+  if (title) jobFields.title = title;
+  if (content) jobFields.content = content;
+  if (filesData) jobFields.filesData = filesData;
+  // if (links) jobFields.links = links;
+  if (dueDate) jobFields.dueDate = dueDate;
 
 
   try {
@@ -83,7 +83,7 @@ router.put("/:id", auth, async (req, res) => {
 
     job = await Job.findByIdAndUpdate(
       req.params.id,
-      { $set: jonFields },
+      { $set: jobFields },
       { new: true }
     );
     res.json(job);
@@ -99,14 +99,15 @@ router.put("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     let job = await Job.findById(req.params.id);
+    
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
     // Make contact is users contact
-    if (job.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "Not Authorized" });
-    }
+    // if (job.user.toString() !== req.user._id) {
+    //   return res.status(401).json({ msg: "Not Authorized" });
+    // }
 
-    await Contact.findByIdAndRemove(req.params.id);
+    await Job.findByIdAndRemove(req.params.id);
     res.json({ msg: "Job Removed" });
   } catch (error) {
     console.error(error.message);

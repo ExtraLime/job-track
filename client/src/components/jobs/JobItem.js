@@ -4,13 +4,15 @@ import PropTypes from "prop-types";
 import { connect } from 'react-redux'
 import { deleteJob, setCurrent } from '../../actions/jobActions'
 import M from 'materialize-css/dist/js/materialize.min.js'
+import ActionButton from '../layout/ActionButton'
 
 
 
-const JobItem = ({ job, deleteJob, setCurrent }) => {
+const JobItem = ({ role ,job, deleteJob, setCurrent }) => {
+console.log(role)
 
   const onDelete = () => {
-    deleteJob(job.id);
+    deleteJob(job._id);
     M.toast({ html: "Job Deleted"})
   }
     
@@ -20,15 +22,15 @@ const JobItem = ({ job, deleteJob, setCurrent }) => {
         <a
           href="#edit-job-modal"
           className={`modal-trigger ${
-            job.attention ? "red-text" : "blue-text"
+            job.urgent === 'on' ? "red-text" : "blue-text"
           }`}
           onClick={() => setCurrent(job)}
         >
-          {job.message}
+          {job.title}
         </a>
         <br />
         <span className="grey-text">
-          <span className="black-text">ID #{job.id} </span>
+          <span className="black-text">ID #{job._id} </span>
            last updated by: <span className="black-text">
             {job.tech}
           </span> on {" "}
@@ -47,4 +49,7 @@ JobItem.propTypes = {
   setCurrent: PropTypes.func.isRequired,
 };
 
-export default connect(null, { deleteJob, setCurrent })(JobItem);
+const mapStateToProps = state => ({
+  role: state.auth.role
+})
+export default connect(mapStateToProps, { deleteJob, setCurrent })(JobItem);

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { addJob } from "../../actions/jobActions";
+import { updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { setAlert, removeAlert } from "../../actions/alertsActions";
 
 
-const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
+const EditJobModal = ({ updateJob, current }) => {
   const [loading, setLoading] = useState('')  
   const [job, setJob] = useState({
     title: "",
@@ -19,12 +19,13 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
     links: [],
   });
 
-  const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
+  useEffect(() =>{
+      if(current){
+          setJob(current)
+      }
+  },[current])
 
-  const onSave = (e) => {
-       setJob({...job})
-       M.toast({ html: "Document Saved" });
-    }
+  const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
       setLoading(true);
@@ -32,14 +33,14 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
     if (job.title === "" || job.content === "" || job.dueDate === "") {
       M.toast({ html: "Title, Due Date and Details are Required" });
     } else {
-      addJob(job);
+      updateJob(job);
     }
     setLoading(false)
   };
 
   return (
     // Job Title
-    <div id="add-job-modal" className="modal" style={modalStyle}>
+    <div id="edit-job-modal" className="modal" style={modalStyle}>
       <div className="modal-content">
         <h4>New Job</h4>
 
@@ -52,7 +53,7 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
                 value={job.title}
                 onChange={onChange}
               />
-              <label htmlFor="title">Job Title</label>
+              <label className='active' htmlFor="title">Job Title</label>
             </div>
           </div>{" "}
           {/* Due Date and Time */}
@@ -60,12 +61,12 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
             <div className="col s4">
               <input
                 type="date"
-                value={job.dueDate}
+                value={job.dueDate.toString()}
                 className="datepiker"
                 name="dueDate"
                 onChange={onChange}
               />
-              <label htmlFor="dueDate">Due Date</label>
+              <label className='active' htmlFor="dueDate">Due Date</label>
             </div>
             {/* Urgent */}
             <div className="switch left">
@@ -88,18 +89,21 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
                 className="materialize-textarea"
                 onChange={onChange}
               ></textarea>
-              <label htmlFor="content">Job Details</label>
+              <label className='active' htmlFor="content">Job Details</label>
             </div>
           </div>
                     {/* displaying job files*/}
-                    <ul className="collection">
-            {job.filesData.length>0 &&
+
+                    <a class='dropdown-trigger btn green' href='#' data-target='dropdown1'>Show Files</a>
+            <ul id='dropdown1' className='drops-down-content'>
+            {
               job.filesData.map((file) => (
-                <li key={file} className="collection-item">
+                  <div className="row">
+                <li key={file} >
                   <p>
                     {file.name} <span className="badge green">Ok</span>{" "}
                   </p>
-                </li>
+                </li></div>
               ))}
           </ul>
           {/* File Uploads */}
@@ -107,7 +111,7 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
           <div className="modal-footer">
             <a
               href="#!"
-              onClick={onSave}
+              onClick={onSubmit}
               className="waves-effect green waves-light btn-large"
             >
               Save Job
@@ -127,9 +131,10 @@ const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
 };
 const modalStyle = {
   width: "75%",
-  maxHeight: "100%",
+  maxHeight: "75%",
 };
 const mapStateToProps = (state) => ({
   error: state.error,
+  current: state.jobs.current
 });
-export default connect(mapStateToProps, { addJob, setAlert })(AddJobModal);
+export default connect(mapStateToProps, { updateJob })(EditJobModal);

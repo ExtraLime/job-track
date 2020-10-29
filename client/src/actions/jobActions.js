@@ -46,16 +46,16 @@ export const getJobs = () => async (dispatch) => {
 
     try {
       setLoading();
-      const res = await fetch("api/jobs", {
-        method: "POST",
-        body: JSON.stringify(job),
-        headers: { "Content-Type": "application/json",
-      "x-auth-token":localStorage.token },
-      });
-      const data = await res.json();
+      const config = {
+        headers: {
+          "x-auth-token": localStorage.token,
+          "Content-Type": "application/json"
+        },
+      };
+      const res = await axios.post("api/jobs",job,config) 
       dispatch({
         type: ADD_JOB,
-        payload: data,
+        payload: res.data
       });
     } catch (error) {
       dispatch({ type: JOBS_ERROR, payload: error});
@@ -64,27 +64,30 @@ export const getJobs = () => async (dispatch) => {
   
   // Delete Job from Server
   
-  export const deleteJob = (id) => async (dispatch) => {
+  export const deleteJob = (_id) => async (dispatch) => {
     try {
       setLoading();
-      await fetch(`/jobs/${id}`, {
-        method: "DELETE",
-      });
+      const config = {
+        headers: {
+          "x-auth-token": localStorage.token,
+        },
+      };
+      await axios.delete(`api/jobs/${_id}`, config);
       dispatch({
         type: DELETE_JOB,
-        payload: id,
+        payload: _id,
       });
     } catch (error) {
-      dispatch({ type: JOBS_ERROR, payload: error.response.statusText });
+      dispatch({ type: JOBS_ERROR, payload: error.response.data.msg });
     }
   };
   
   //Set current Job
   
-  export const setCurrent = (Job) => {
+  export const setCurrent = (job) => {
     return {
       type: SET_CURRENT,
-      payload: Job,
+      payload: job,
     };
   };
   // Clear Current Job
@@ -98,20 +101,27 @@ export const getJobs = () => async (dispatch) => {
   export const updateJob = (job) => async (dispatch) => {
     try {
       setLoading();
-        await fetch(`/jobs/${job.id}`, {
-        method: "PUT",
-        body: JSON.stringify(job),
+      const config = {
         headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
+          "Content-Type":"application/json",
+          "x-auth-token": localStorage.token,
+        } 
+      };
+      const res = await axios.put(`api/jobs/${job._id}`,job, config)
+        // await fetch(`api/jobs/${job.id}`, {
+        // method: "PUT",
+        // body: JSON.stringify(job),
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        
+    
       dispatch({
         type: EDIT_JOB,
-        payload: job,
+        payload: res.data,
       });
     } catch (error) {
-      dispatch({ type: JOBS_ERROR, payload: error.response.statusText });
+      dispatch({ type: JOBS_ERROR, payload: error.response.data.msg });
     }
   };
   
@@ -119,7 +129,7 @@ export const getJobs = () => async (dispatch) => {
   export const searchJobs = (text) => async (dispatch) => {
     try {
       setLoading();
-      const res = await fetch(`/jobs?q=${text}`);
+      const res = await fetch(`api/jobs?q=${text}`);
       const data = await res.json();
       dispatch({
         type: SEARCH_JOBS,
