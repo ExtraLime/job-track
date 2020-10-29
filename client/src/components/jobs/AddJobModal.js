@@ -3,145 +3,121 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { addJob } from "../../actions/jobActions";
-import FileUpload from './FileUpload'
+import FileUpload from "./FileUpload";
+import { setAlert, removeAlert } from "../../actions/alertsActions";
 import Jobs from "./Jobs";
-import TestUp from './TestUp'
 
-
-const AddJobModal = ({ addJob, fileUpload }) => {
-
-
+const AddJobModal = ({ addJob, setAlert, removeAlert }) => {
+  const [loading, setLoading] = useState('')  
   const [job, setJob] = useState({
     title: "",
     urgent: false,
-    dueDate: '',
-    time:'',
+    dueDate: "",
+    time: "Noon",
     content: "",
-    files: [],
-    filesData:null,
+    filesData: [],
     links: [],
   });
 
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
-  useEffect(() => {
-    console.log(job)
-
-  }, []);
-
-  const handleUpload = (e) => {
-    console.log("upload")
-      };
-  
-
   const onSubmit = (e) => {
+      setLoading(true);
     e.preventDefault();
+    if (job.title === "" || job.content === "" || job.dueDate === "") {
+      M.toast({ html: "Title, Due Date and Details are Required" });
+    } else {
+      addJob(job);
+    }
+    setLoading(false)
   };
 
   return (
-    // <div id="modal1" class="modal">
-    //   <div class="modal-content">
-    //     <h4>Modal Header</h4>
-    //     <p>A bunch of text</p>
-    //   </div>
-    //   <div class="modal-footer">
-    //     <a href="!#" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-    //   </div>
-    // </div>
-
     // Job Title
-    <div id="modal1" className="modal" style={modalStyle}>
+    <div id="add-job-modal" className="modal" style={modalStyle}>
       <div className="modal-content">
         <h4>New Job</h4>
 
         <form onSubmit={onSubmit} className="form-container">
           <div className="row">
-            <div className="input-field col s6">
-              <input type="text" name="title"  value={job.title} onChange={onChange} />
+            <div className="input-field col s6 m6">
+              <input
+                type="text"
+                name="title"
+                value={job.title}
+                onChange={onChange}
+              />
               <label htmlFor="title">Job Title</label>
             </div>
           </div>{" "}
           {/* Due Date and Time */}
           <div className="row">
-            <div className="col s6">
-              <input type="date" value={job.dueDate} className="datepiker" name='dueDate' onChange={onChange} />
+            <div className="col s4">
+              <input
+                type="date"
+                value={job.dueDate}
+                className="datepiker"
+                name="dueDate"
+                onChange={onChange}
+              />
               <label htmlFor="dueDate">Due Date</label>
             </div>
-          </div>{" "}
-          <div className="row">
-            <div className="input-field col s6">
-              <input name='time' type="hour" className="timepicker" value={job.time} onChange={onChange} />
-              <label htmlFor="time">Time</label>
+            {/* Urgent */}
+            <div className="switch left">
+              <label>
+                Normal
+                <input type="checkbox" name="urgent" onChange={onChange} />
+                <span className="lever"></span>
+                Urgent
+              </label>
             </div>
           </div>{" "}
-          {/* Urgent */}
-          <div className="switch left">
-            <label>
-              Normal
-              <input type="checkbox" name="urgent" onChange={onChange} />
-              <span className="lever"></span>
-              Urgent
-            </label>
-          </div>
+
           {/* Content */}
           <div className="row">
             <div className="input-field col s12">
-              <textarea id="content" className="materialize-textarea" onChange={onChange}></textarea>
+              <textarea
+                name="content"
+                id="content"
+                value={job.content}
+                className="materialize-textarea"
+                onChange={onChange}
+              ></textarea>
               <label htmlFor="content">Job Details</label>
             </div>
-          </div>{" "}
-          {/* links */}
-          <div className="row">
-            <div className="input-field col s12 s6">
-              <input
-                type="text"
-                name="links"
-                value={job.links}
-                onChange={onChange}
-              />
-              <label htmlFor="links">Links</label>
-            </div>
-          </div>{" "}
-          
-
-
+          </div>
+                    {/* displaying job files*/}
+                    <ul className="collection">
+            {job.filesData.length>0 &&
+              job.filesData.map((file) => (
+                <li key={file} className="collection-item">
+                  <p>
+                    {file.name} <span className="badge green">Ok</span>{" "}
+                  </p>
+                </li>
+              ))}
+          </ul>
           {/* File Uploads */}
-          <div className="row">
-          <div className="input-field col s12 s6">
-          <FileUpload onClick={onChange} value={job.files} />
-          </div></div>
-          {/* <div className="row">
-            <div className="input-field col s12">
-              <input
-                type="text"
-                name="files"
-                value={job.files}
-                onChange={onChange}
-              />
-              <label htmlFor="files">File Upload</label>
-            </div>
-          </div>{" "} */}
-
-          {/* <div className="file-field input-field">
-      <div className="btn">
-        <span>Upload Files</span>
-        <input name="files" type="file" multiple onChange={handleUpload} />
-      </div>
-      <div className="file-path-wrapper">
-        <input  name='filesData' className="file-path validate"  onChange={onChange} type="text" placeholder="Upload one or more files"/>
-      </div>
-    </div> */}
-
-
+          <FileUpload getData={(data) => setJob({ ...job, filesData: data })} />
+          <div className="modal-footer">
+            <a
+              href="#!"
+              onClick={onSubmit}
+              className="waves-effect green waves-light btn-large"
+            >
+              Enter
+            </a>
+          </div>
         </form>
-
-<TestUp name='files' onClick={onChange}/>
       </div>
     </div>
   );
 };
 const modalStyle = {
   width: "75%",
-  height: "75%",
+  maxHeight: "100%",
 };
-export default AddJobModal;
+const mapStateToProps = (state) => ({
+  error: state.error,
+});
+export default connect(mapStateToProps, { addJob, setAlert })(AddJobModal);

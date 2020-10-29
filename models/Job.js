@@ -1,42 +1,43 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 const JobSchema = mongoose.Schema({
-    client: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    dueDate: {
-        type: Date,
-        required: true
-    },
-    urgent: {
-type:Boolean
-    },
-    content: {
-        type: String,
-        required: true
-    },
-    files: {
-        type: Array,
-        required: false
-    },
-    links: {
-        type: Array,
-        required: false
-    },
-    closeDate: {
-        type: Date,
-        required: false,
-        default: "OPEN"
-    }    
-})
-module.exports = mongoose.model('job', JobSchema);
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required:true,
+    ref: "users",
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  dueDate: {
+    type: Date,
+    required: true,
+  },
+  time: {
+    type: String,
+    required:false
+ 
+  },
+  urgent: {
+    type: Boolean,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  filesData: {
+    type: Array,
+    required: false,
+  },
+  closeDate: {
+    type: String,
+    required: false,
+    default: "OPEN",
+  },
+});
+module.exports = mongoose.model("job", JobSchema);

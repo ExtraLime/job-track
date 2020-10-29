@@ -3,6 +3,7 @@ import setAuthToken from '../utils/setAuthToken'
 import { Redirect } from 'react-router-dom'
 import React from 'react'
 
+
 import {
   ADD_JOB,
   EDIT_JOB,
@@ -21,26 +22,35 @@ import {
 export const getJobs = () => async (dispatch) => {
     try {
       setLoading();
-      const res = await fetch("/jobs");
-      const data = await res.json();
+      const config = {
+        headers: {
+          "x-auth-token": localStorage.token,
+          "Content-Type":"application/json"
+        },
+      };
+      const res = await axios.get("/api/jobs",config);
+      const data = await res.data;
       dispatch({
         type: GET_JOBS,
         payload: data,
       });
     } catch (error) {
-        
+        console.log(error)
       dispatch({ type: JOBS_ERROR, payload: error });
     }
   };
   
   // Add new job
   export const addJob = (job) => async (dispatch) => {
+    
+
     try {
       setLoading();
-      const res = await fetch("/jobs", {
+      const res = await fetch("api/jobs", {
         method: "POST",
         body: JSON.stringify(job),
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+      "x-auth-token":localStorage.token },
       });
       const data = await res.json();
       dispatch({
@@ -48,7 +58,7 @@ export const getJobs = () => async (dispatch) => {
         payload: data,
       });
     } catch (error) {
-      dispatch({ type: JOBS_ERROR, payload: error.response.statusText });
+      dispatch({ type: JOBS_ERROR, payload: error});
     }
   };
   

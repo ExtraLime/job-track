@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const fileUpload = require('express-fileupload');
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
@@ -15,8 +14,10 @@ const Job = require("../models/Job");
 
 router.get("/", auth, async (req, res) => {
   try {
-    const jobs = await Job.find({ user: req.user.id }).sort({ date: -1 });
+    console.log(req.user.id)
+    const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
     res.json(jobs);
+    console.log(jobs.data)
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server Error");
@@ -43,7 +44,7 @@ router.post(
 
     try {
       newJob = new Job({
-        client: req.user.id, title, dateOpened, dueDate, content, files, links, closeDate
+        owner: req.user.id, title, dueDate, content, filesData
       });
 
       const job = await newJob.save();
@@ -113,7 +114,7 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-router.post('/fileUpload', async (req, res) => {
+router.post('/fileUpload',auth, async (req, res) => {
 
   if (!req.files) {
       return res.status(500).send({ msg: "file is not found" })

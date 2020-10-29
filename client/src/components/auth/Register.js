@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Redirect } from "react";
 import { Link } from 'react-router-dom'
 
 
@@ -7,6 +7,8 @@ import { register, loadUser, clearErrors } from "../../actions/authActions";
 import { setAlert } from "../../actions/alertsActions";
 
 const Register = (props) => {
+
+
   useEffect(() => {
     if (props.isAuthenticated) {
       props.loadUser(props.history);
@@ -49,6 +51,26 @@ const Register = (props) => {
         Job-Tracker <span className="text-secondary center">Registration</span>
       </h4>
       <form onSubmit={onSubmit} className="form-container">
+        
+      <div className="inrow">
+        <div className="row input-field">
+        <select
+            name="role"
+            value={role? role : "Select Account Type"}
+            className="row input-field col s12"
+            onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
+          >
+             <option value='Select Account Type'  ></option>
+            <option value="user" >
+              User{" "}
+            </option>
+            <option value="contractor" >
+              Contractor{" "}
+            </option>          
+          </select>
+          </div>
+        </div>
+        
         <div className="inrow">
           <div className="row input-field">
             <label htmlFor="name">Name</label>
@@ -108,26 +130,7 @@ const Register = (props) => {
             />
           </div>
         </div>
-        <div className="inrow">
-        <div className="row input-field">
-        <select
-            name="role"
-            value='Select Account Type'
-            className="row input-field col s12"
-            onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
-          >
-             <option value='Select Account Type' default disabled >
-             Select Account Type{" "}
-            </option>
-            <option value="user" >
-              User{" "}
-            </option>
-            <option value="contractor" >
-              Contractor{" "}
-            </option>          
-          </select>
-          </div>
-        </div>
+
 
         <button
           type="submit"
