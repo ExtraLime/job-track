@@ -23,7 +23,8 @@
     "express-validator": "^6.6.1",
     "jsonwebtoken": "^8.5.1",
     "material-icons": "^0.3.1",
-    "mongoose": "^5.10.9"
+    "mongoose": "^5.10.9",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",

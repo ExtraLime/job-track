@@ -2,13 +2,12 @@ import React from "react";
 import Moment from 'react-moment'
 import PropTypes from "prop-types";
 import { connect } from 'react-redux'
-import { deleteJob, setCurrent } from '../../actions/jobActions'
+import { deleteJob, setCurrent, clearCurrent } from '../../actions/jobActions'
 import M from 'materialize-css/dist/js/materialize.min.js'
-import ActionButton from '../layout/ActionButton'
 
 
 
-const JobItem = ({ role ,job, deleteJob, setCurrent }) => {
+const JobItem = ({ role ,job, deleteJob, setCurrent, clearCurrent }) => {
 console.log(role)
 
   const onDelete = () => {

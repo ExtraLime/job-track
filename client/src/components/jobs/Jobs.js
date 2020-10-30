@@ -9,6 +9,8 @@ import AddJobModal from "../jobs/AddJobModal";
 import EditJobModal from "../jobs/EditJobModal";
 
 
+
+
 const Jobs = ({ jobs, getJobs }) => {
   useEffect(() => {
     getJobs();

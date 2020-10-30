@@ -53,20 +53,21 @@ const Register = (props) => {
       <form onSubmit={onSubmit} className="form-container">
         
       <div className="inrow">
-        <div className="row input-field">
+        <div className="row input-field col s12">
         <select
             name="role"
-            value={role? role : "Select Account Type"}
-            className="row input-field col s12"
+            value={role}
+            className="input-field col s12"
             onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
           >
-             <option value='Select Account Type'  ></option>
+             <option value='' disabled selected>Choose Account Type</option>
             <option value="user" >
               User{" "}
             </option>
             <option value="contractor" >
               Contractor{" "}
-            </option>          
+            </option>
+            <label>Choose Account Type</label>          
           </select>
           </div>
         </div>

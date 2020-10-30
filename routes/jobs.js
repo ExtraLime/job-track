@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
@@ -61,7 +62,8 @@ router.post(
 // @desc  Add new user contact
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  const { title, dateOpened, dueDate, content, files, links, closeDate } = req.body;
+  console.log(req.body)
+  const { title, dateOpened, dueDate, content, filesData, links, closeDate } = req.body;
 
   // Build contact object
   const jobFields = {};
@@ -77,9 +79,9 @@ router.put("/:id", auth, async (req, res) => {
     if (!job) return res.status(404).json({ msg: "Contact not found" });
 
     // Make contact is users contact
-    if (job.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "Not Authorized" });
-    }
+    // if (job.user.toString() !== req.user.id) {
+    //   return res.status(401).json({ msg: "Not Authorized" });
+    // }
 
     job = await Job.findByIdAndUpdate(
       req.params.id,
@@ -130,7 +132,7 @@ router.post('/fileUpload',auth, async (req, res) => {
           return res.status(500).send({ msg: "Error occured" });
       }
       // returing the response with file path and name
-      return res.send({name: myFile.name, path: `${__dirname}/../client/files/${myFile.name}`});
+      return res.send({_id:uuidv4(),name: myFile.name, path: `${__dirname}/../client/files/${myFile.name}`});
   });
 })
 

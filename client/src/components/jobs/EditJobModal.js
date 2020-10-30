@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { updateJob } from "../../actions/jobActions";
+import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { setAlert, removeAlert } from "../../actions/alertsActions";
+import {v4 as uuid } from 'uuid'
 
-
-const EditJobModal = ({ updateJob, current }) => {
+const EditJobModal = ({ updateJob,clearCurrent, current }) => {
   const [loading, setLoading] = useState('')  
   const [job, setJob] = useState({
     title: "",
@@ -24,6 +24,10 @@ const EditJobModal = ({ updateJob, current }) => {
           setJob(current)
       }
   },[current])
+  const onSave = (e) => {
+    setJob({...job})
+    
+ }
 
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
@@ -34,15 +38,21 @@ const EditJobModal = ({ updateJob, current }) => {
       M.toast({ html: "Title, Due Date and Details are Required" });
     } else {
       updateJob(job);
+      M.toast({ html: "Document Saved" });
     }
+    
     setLoading(false)
+
   };
+  const onClose = (e) => {
+    clearCurrent();
+  }
 
   return (
     // Job Title
     <div id="edit-job-modal" className="modal" style={modalStyle}>
       <div className="modal-content">
-        <h4>New Job</h4>
+        <h4>Edit Job</h4>
 
         <form onSubmit={onSubmit} className="form-container">
           <div className="row">
@@ -92,22 +102,31 @@ const EditJobModal = ({ updateJob, current }) => {
               <label className='active' htmlFor="content">Job Details</label>
             </div>
           </div>
-                    {/* displaying job files*/}
 
-                    <a class='dropdown-trigger btn green' href='#' data-target='dropdown1'>Show Files</a>
-            <ul id='dropdown1' className='drops-down-content'>
-            {
-              job.filesData.map((file) => (
-                  <div className="row">
-                <li key={file} >
-                  <p>
-                    {file.name} <span className="badge green">Ok</span>{" "}
-                  </p>
-                </li></div>
-              ))}
+
+
+                    {/* displaying job files*/}                    
+            <ul className='collapsible'>
+              <li>
+                <div className="collapsible-header">
+                  This job has {job.filesData.length} files
+                </div>
+                <div className="collapsible-body">
+                  <div className="collection">
+                  <ul>{job.filesData.map((file) => ( 
+                    <li key={uuid()} >
+                      <div className="collection-item">
+                            <span>{file.name} <span className="badge green">Ok</span></span>
+                      </div>
+                    </li>))}                
+                </ul></div>
+                </div>                
+              </li>
+
           </ul>
+
           {/* File Uploads */}
-          <FileUpload getData={(data) => setJob({ ...job, filesData: data })} />
+          <FileUpload fList={job.filesData} getData={(data) => setJob({ ...job, filesData: data })} />
           <div className="modal-footer">
             <a
               href="#!"
@@ -118,7 +137,7 @@ const EditJobModal = ({ updateJob, current }) => {
             </a>
             <a
               href="#!"
-              onClick={onSubmit}
+              onClick={onClose}
               className="waves-effect modal-close green waves-light btn-large"
             >
               Job List
@@ -137,4 +156,4 @@ const mapStateToProps = (state) => ({
   error: state.error,
   current: state.jobs.current
 });
-export default connect(mapStateToProps, { updateJob })(EditJobModal);
+export default connect(mapStateToProps, { updateJob, clearCurrent })(EditJobModal);

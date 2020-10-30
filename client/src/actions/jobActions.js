@@ -101,6 +101,7 @@ export const getJobs = () => async (dispatch) => {
   export const updateJob = (job) => async (dispatch) => {
     try {
       setLoading();
+      console.log(job)
       const config = {
         headers: {
           "Content-Type":"application/json",

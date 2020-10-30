@@ -24,7 +24,9 @@ const JobSchema = mongoose.Schema({
  
   },
   urgent: {
-    type: Boolean,
+    type: String,
+    required:true,
+    default:"off"
   },
   content: {
     type: String,
@@ -49,5 +51,10 @@ const JobSchema = mongoose.Schema({
     required: false,
     default: "OPEN",
   },
+  lastUpdate: {
+    type: Date,
+    required: true,
+    default: Date.now
+  }
 });
 module.exports = mongoose.model("job", JobSchema);

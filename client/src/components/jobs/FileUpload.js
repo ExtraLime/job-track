@@ -1,14 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
+
+
 
 const FileUpload = (props) => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]); // storing the uploaded file    // storing the recived file from backend
-  const [data, getFile] = useState({ name: "", path: "" });
+  const [data, getFile] = useState({ name: "", path: "", _id:"" });
   const [progress, setProgress] = useState(0); // progess bar
   const el = useRef(); // accesing input element
   const [filelist, setFilelist] = useState([]);
+
+  useEffect(()=>{
+    if (props.fList){
+
+    }
+  })
 
   const clearUpload = () => {
       setFiles([]);
@@ -26,8 +34,9 @@ const FileUpload = (props) => {
     const fileNames = [];
     for (let i = 0; i < files.length; i++) {
       const formData = new FormData();
-
+console.log(files[i])
       formData.append("file", files[i]); // appending file
+      console.log(formData)
       axios
         .post("api/jobs/fileUpload", formData, {
           onUploadProgress: (ProgressEvent) => {
@@ -37,22 +46,28 @@ const FileUpload = (props) => {
             setProgress(progress);
           },
         })
-        .then((res) => {
+        .then((res) => {console.log(res)
           getFile({
             name: res.data.name,
             path: res.data.path,
+            _id: res.data._id
           });
           fileList.push({
             name: res.data.name,
             path: res.data.path,
+            _id:res.data._id,
           });
           fileNames.push(res.data.name);
           setFilelist([fileNames]);
+          console.log(fileNames)
+          console.log(fileList)
+          props.getData(props.fList ? [...props.fList, ...fileList]:fileList);
         })
         .catch((err) => console.log(err));
     }
-    props.getData(fileList);
-    setFilelist(fileNames);
+// setFilelist(fileList);
+//     props.getData(props.fList ? [...props.fList, ...fileList]:fileList);
+//     setFilelist(fileNames);
     setLoading(false);
     clearUpload();
   };
