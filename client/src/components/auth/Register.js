@@ -26,8 +26,9 @@ const Register = (props) => {
     name: "",
     password2: "",
     role: "",
+    connections:"",
   });
-  const { name, email, role, password, password2 } = user;
+  const { name, email, role, password, password2, connections } = user;
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
   const onSubmit = (e) => {
@@ -41,7 +42,9 @@ const Register = (props) => {
         name,
         email,
         password,
-        role
+        role,
+        connections,
+        
       });
     }
   };
@@ -60,15 +63,15 @@ const Register = (props) => {
             className="input-field col s12"
             onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
           >
-             <option value='' disabled selected>Choose Account Type</option>
+             <option value='' disabled >Choose Account Type</option>
             <option value="user" >
               User{" "}
             </option>
             <option value="contractor" >
               Contractor{" "}
             </option>
-            <label>Choose Account Type</label>          
-          </select>
+                 
+          </select><label>Choose Account Type</label>     
           </div>
         </div>
         

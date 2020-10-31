@@ -1,16 +1,15 @@
 import React, { Fragment } from "react";
 
-const ActionButton = ({ action, href, color, label }) => {
-  console.log(action);
+const ActionButton = ({ action, side, color, icon }) => {
 
   return (
     <Fragment>
-      <div className="direction-left" style={{ display: "flex" }}>
+      <div className="direction-left" style={{ alignSelf: `${side}` }}>
         <a
-          className={`waves-effect waves-light btn modal-trigger ${color}`}
+          className={`waves-effect waves-light btn ${side} modal-trigger ${color}`}
           href={action}
         >
-          <i className="material-icons">add</i>
+          <i className="material-icons">{icon}</i>
         </a>
       </div>
     </Fragment>

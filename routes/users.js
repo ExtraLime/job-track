@@ -5,6 +5,7 @@ const config = require("config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const auth = require("../middleware/auth");
 
 const User = require("../models/User");
 
@@ -27,7 +28,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, connections } = req.body;
     try {
       let user = await User.findOne({ email });
 
@@ -41,7 +42,8 @@ router.post(
         name,
         email,
         password,
-        role
+        role,
+        connections
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -72,5 +74,20 @@ router.post(
     }
   }
 );
+
+// @desc  GET ALL CONTRACTORS
+
+// @route GET api/users
+// @access  Private
+
+router.get("/contractors", async (req, res) => {
+  try {
+    const data = await User.find({ role: "contractor" }).sort({ date: -1 });
+    res.json(data)
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;

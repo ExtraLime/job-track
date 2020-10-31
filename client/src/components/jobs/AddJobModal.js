@@ -5,11 +5,10 @@ import PropTypes from "prop-types";
 import { addJob, clearCurrent } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { setAlert, removeAlert } from "../../actions/alertsActions";
-import { v4 as uuid } from 'uuid'
-
+import { v4 as uuid } from "uuid";
 
 const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
-  const [loading, setLoading] = useState('')  
+  const [loading, setLoading] = useState("");
   const [job, setJob] = useState({
     title: "",
     urgent: false,
@@ -23,18 +22,19 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
-    setJob({title: "",
-    urgent: false,
-    dueDate: "",
-    time: "Noon",
-    content: "",
-    filesData: [],
-    links: [],})
-       
-    }
+    setJob({
+      title: "",
+      urgent: false,
+      dueDate: "",
+      time: "Noon",
+      content: "",
+      filesData: [],
+      links: [],
+    });
+  };
 
   const onSave = (e) => {
-      setLoading(true);
+    setLoading(true);
     e.preventDefault();
     if (job.title === "" || job.content === "" || job.dueDate === "") {
       M.toast({ html: "Title, Due Date and Details are Required" });
@@ -43,7 +43,7 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
       M.toast({ html: "Document Saved" });
     }
 
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
@@ -86,7 +86,6 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
               </label>
             </div>
           </div>{" "}
-
           {/* Content */}
           <div className="row">
             <div className="input-field col s12">
@@ -100,25 +99,28 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
               <label htmlFor="content">Job Details</label>
             </div>
           </div>
-                    {/* displaying job files*/}
-                   {/* displaying job files*/}                    
-                   <ul className='collapsible'>
-              <li>
-                <div className="collapsible-header">
-                  This job has {job.filesData.length} files
+          {/* displaying job files*/}
+          <ul className="collapsible">
+            <li>
+              <div className="collapsible-header">
+                This job has {job.filesData.length} files
+              </div>
+              <div className="collapsible-body">
+                <div className="collection">
+                  <ul>
+                    {job.filesData.map((file) => (
+                      <li key={uuid()}>
+                        <div className="collection-item">
+                          <span>
+                            {file.name} <span className="badge green">Ok</span>
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="collapsible-body">
-                  <div className="collection">
-                  <ul>{job.filesData.map((file) => ( 
-                    <li key={uuid()} >
-                      <div className="collection-item">
-                            <span>{file.name} <span className="badge green">Ok</span></span>
-                      </div>
-                    </li>))}                
-                </ul></div>
-                </div>                
-              </li>
-
+              </div>
+            </li>
           </ul>
           {/* File Uploads */}
           <FileUpload getData={(data) => setJob({ ...job, filesData: data })} />
@@ -151,4 +153,6 @@ const modalStyle = {
 const mapStateToProps = (state) => ({
   error: state.error,
 });
-export default connect(mapStateToProps, { clearCurrent, addJob, setAlert })(AddJobModal);
+export default connect(mapStateToProps, { clearCurrent, addJob, setAlert })(
+  AddJobModal
+);

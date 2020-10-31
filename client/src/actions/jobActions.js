@@ -140,6 +140,17 @@ export const getJobs = () => async (dispatch) => {
       dispatch({ type: JOBS_ERROR, payload: error.response.statusText });
     }
   };
+
+   // Search Jobs
+   export const searchContractors = (text) => async (dispatch) => {
+    try {
+      setLoading();
+      const res = await fetch(`api/users/contractors?q=${text}`);
+      const data = await res.json();
+    } catch (error) {
+      console.log(error)
+    }
+  };
   
   // Set Loading to true
   export const setLoading = () => {
@@ -149,3 +160,15 @@ export const getJobs = () => async (dispatch) => {
   };
 
 
+  export const getContractors = () => async (dispatch) => {
+    try {
+setAuthToken(localStorage.token)
+      const res = await axios.get("/api/users/contractors");
+      
+return res
+   
+    } catch (error) {
+        console.log(error)
+     
+    }
+  };
