@@ -11,6 +11,8 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
+  UPDATE_USER,
+  AUTH_ERROR
 } from "./types";
 
 // Load User
@@ -84,3 +86,29 @@ export const clearErrors = () => (dispatch) => {
 };
 
 
+export const updateConnections = (user, connection) => async (dispatch) => {
+  try {
+    console.log(user)
+    const config = {
+      headers: {
+        "Content-Type":"application/json",
+        "x-auth-token": localStorage.token,
+      } 
+    };
+    const res = await axios.put(`api/users/${user._id}`,{connection}, config)
+      // await fetch(`api/jobs/${job.id}`, {
+      // method: "PUT",
+      // body: JSON.stringify(job),
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      
+  
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({ type: AUTH_ERROR, payload: error.response.data.msg });
+  }
+};

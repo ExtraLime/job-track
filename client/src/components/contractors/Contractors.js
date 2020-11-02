@@ -1,38 +1,43 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import SearchBarModal from '../layout/SearchBarModal'
+import AddContractorModal from "../layout/AddContractorModal";
+import axios from "axios";
 
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
 import { v4 as uuid } from "uuid";
-import { getContractors } from '../../actions/jobActions'
-
-const Contractors = ({getContractors, user }) => {
-  const cList = getContractors();
-  console.log(cList)
-  useEffect(()=>{
-    const list1 = getContractors();
-    //eslint-disable-next-line
-  },[])
+import { getContractors } from "../../utils/getContractors";
+import { set } from "mongoose";
 
 
-  console.log(user);
-  console.log(cList);
+const Contractors = ({ user }) => {
 
+  const [connections, setConnections] = useState([...user.connections])
+  const [contractors, setContractors] = useState([])
+  
+  // useEffect(() => {
+  //   setContractors([...user.connections,connections])
+  // },[connections])
+console.log(connections)
+console.log(contractors)
   return (
-      
     <Fragment>
-<SearchBarModal />
+      <AddContractorModal connections={connections} add={setConnections}/>
       <ul className="collection with-headers">
         <li className="collection-header">
-          <span><ActionButton side='left' icon="search" color="green" action="#search-modal" />
+          <span>
+            <ActionButton
+              side="left"
+              icon="search"
+              color="green"
+              action="#add-contractor-modal"
+            />
             <h4 className="center">Contractor List</h4>
-            
           </span>
         </li>
-        {user.contractors && user.contractors.length > 0 ? (
-          user.contractors.map((contractor) => (
-            <li className="collection-item">{user.contractor.id}</li>
+        {connections && connections.length > 0 ? (
+          connections.map((connection) => (
+            <li key={connection._id} className="collection-item">{connection.name}</li>
           ))
         ) : (
           <p>No Contractors to Show</p>
@@ -52,4 +57,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { getContractors })(Contractors);
+export default connect(mapStateToProps, {  })(Contractors);

@@ -160,15 +160,3 @@ export const getJobs = () => async (dispatch) => {
   };
 
 
-  export const getContractors = () => async (dispatch) => {
-    try {
-setAuthToken(localStorage.token)
-      const res = await axios.get("/api/users/contractors");
-      
-return res
-   
-    } catch (error) {
-        console.log(error)
-     
-    }
-  };

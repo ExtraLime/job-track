@@ -26,7 +26,7 @@ const Register = (props) => {
     name: "",
     password2: "",
     role: "",
-    connections:"",
+    connections:[],
   });
   const { name, email, role, password, password2, connections } = user;
 

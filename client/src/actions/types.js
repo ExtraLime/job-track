@@ -25,3 +25,5 @@ export const CLEAR_JOBS = 'CLEAR_JOBS';
 
 
 export const SET_LOADING = 'SET_LOADING';
+export const UPDATE_USER = 'UPDATE_USER';
+

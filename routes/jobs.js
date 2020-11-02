@@ -63,7 +63,7 @@ router.post(
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
   console.log(req.body)
-  const { title, dateOpened, dueDate, content, filesData, links, closeDate } = req.body;
+  const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate } = req.body;
 
   // Build contact object
   const jobFields = {};
@@ -72,11 +72,15 @@ router.put("/:id", auth, async (req, res) => {
   if (filesData) jobFields.filesData = filesData;
   // if (links) jobFields.links = links;
   if (dueDate) jobFields.dueDate = dueDate;
-
-
+  if (lastUpdate) jobFields.lastUpdate = lastUpdate;
+  if (contractor) jobFields.contractor = contractor;
+  if (status) jobFields.status = status;
+  if (closeDate) jobFields.closeDate = closeDate;
+  if (urgent) jobFields.urgent = urgent;
+  
   try {
     let job = await Job.findById(req.params.id);
-    if (!job) return res.status(404).json({ msg: "Contact not found" });
+    if (!job) return res.status(404).json({ msg: "Job not found" });
 
     // Make contact is users contact
     // if (job.user.toString() !== req.user.id) {

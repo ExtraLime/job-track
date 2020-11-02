@@ -7,7 +7,7 @@ import FileUpload from "./FileUpload";
 import { setAlert, removeAlert } from "../../actions/alertsActions";
 import {v4 as uuid } from 'uuid'
 
-const EditJobModal = ({ updateJob,clearCurrent, current }) => {
+const EditJobModal = ({ user, updateJob,clearCurrent, current }) => {
   const [loading, setLoading] = useState('')  
   const [job, setJob] = useState({
     title: "",
@@ -37,6 +37,8 @@ const EditJobModal = ({ updateJob,clearCurrent, current }) => {
     if (job.title === "" || job.content === "" || job.dueDate === "") {
       M.toast({ html: "Title, Due Date and Details are Required" });
     } else {
+      const date = Date.now();
+      setJob({...job, lastUpdate: {by: user._id, date:Date.now()}})
       updateJob(job);
       M.toast({ html: "Document Saved" });
     }
@@ -45,6 +47,7 @@ const EditJobModal = ({ updateJob,clearCurrent, current }) => {
 
   };
   const onClose = (e) => {
+    updateJob(job);
     clearCurrent();
   }
 
@@ -154,6 +157,7 @@ const modalStyle = {
 };
 const mapStateToProps = (state) => ({
   error: state.error,
-  current: state.jobs.current
+  current: state.jobs.current,
+  user: state.auth.user
 });
 export default connect(mapStateToProps, { updateJob, clearCurrent })(EditJobModal);

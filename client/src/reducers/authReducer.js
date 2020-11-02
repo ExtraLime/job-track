@@ -7,6 +7,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
+  UPDATE_USER
 } from "../actions/types";
 
 const user = JSON.parse(localStorage.getItem("user"));
@@ -37,6 +38,13 @@ export default (state = initialState, action) => {
         loading: false,
         user: action.payload,
       };
+      case UPDATE_USER:
+        return {
+          ...state,
+          isAuthenticated: true,
+          loading: false,
+          user: action.payload,
+        };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
       localStorage.setItem("token", action.payload.token);

@@ -52,9 +52,9 @@ const JobSchema = mongoose.Schema({
     default: "OPEN",
   },
   lastUpdate: {
-    type: Date,
+    type: Object,
     required: true,
-    default: Date.now
+    default: {}
   }
 });
 module.exports = mongoose.model("job", JobSchema);
