@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
+
 import { addJob, clearCurrent } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
-import { setAlert, removeAlert } from "../../actions/alertsActions";
+import { setAlert } from "../../actions/alertsActions";
 import { v4 as uuid } from "uuid";
 
-const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
+
+const AddJobModal = ({ user, addJob, clearCurrent, setAlert, removeAlert }) => {
   const [loading, setLoading] = useState("");
   const [job, setJob] = useState({
     title: "",
@@ -17,6 +18,7 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
     content: "",
     filesData: [],
     links: [],
+    contractor:""
   });
 
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
@@ -30,6 +32,7 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
       content: "",
       filesData: [],
       links: [],
+      contractor:''
     });
   };
 
@@ -53,6 +56,8 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
         <h4>New Job</h4>
 
         <form onSubmit={onSubmit} className="form-container">
+
+          {/* Title row and contractor select */}
           <div className="row">
             <div className="input-field col s6 m6">
               <input
@@ -63,6 +68,20 @@ const AddJobModal = ({ addJob, clearCurrent, setAlert, removeAlert }) => {
               />
               <label htmlFor="title">Job Title</label>
             </div>
+            <div className="input-field col s6 m6">
+              <select onChange={onChange} name="contractor" value={job.contractor.name}>
+                <option value="" disabled>Choose a Contractor</option>
+                {user.connections ? (user.connections.map((connection) => 
+                <option value={connection.id}>{connection.name}</option>)):<option><p>You have no contractors</p> </option>}
+              </select>
+              <label htmlFor="cSelect">Contractor</label>
+            </div>
+
+
+
+
+
+
           </div>{" "}
           {/* Due Date and Time */}
           <div className="row">
@@ -152,6 +171,7 @@ const modalStyle = {
 };
 const mapStateToProps = (state) => ({
   error: state.error,
+  user: state.auth.user
 });
 export default connect(mapStateToProps, { clearCurrent, addJob, setAlert })(
   AddJobModal

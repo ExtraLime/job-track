@@ -58,6 +58,7 @@ const EditJobModal = ({ user, updateJob,clearCurrent, current }) => {
         <h4>Edit Job</h4>
 
         <form onSubmit={onSubmit} className="form-container">
+                    {/* Title Row */}
           <div className="row">
             <div className="input-field col s6 m6">
               <input
@@ -69,6 +70,8 @@ const EditJobModal = ({ user, updateJob,clearCurrent, current }) => {
               <label className='active' htmlFor="title">Job Title</label>
             </div>
           </div>{" "}
+
+
           {/* Due Date and Time */}
           <div className="row">
             <div className="col s4">

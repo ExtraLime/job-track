@@ -97,7 +97,7 @@ export const getJobs = () => async (dispatch) => {
     };
   };
   // Update job from Server
-  
+   
   export const updateJob = (job) => async (dispatch) => {
     try {
       setLoading();

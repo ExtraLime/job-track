@@ -54,7 +54,7 @@ const JobSchema = mongoose.Schema({
   lastUpdate: {
     type: Object,
     required: true,
-    default: {}
+    default: {"by":"system","date":Date.now()}
   }
 });
 module.exports = mongoose.model("job", JobSchema);

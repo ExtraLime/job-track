@@ -80,25 +80,25 @@ router.post(
 // access private
 
 router.put("/:id", auth, async (req, res) => {
-  console.log(req.body)
-  console.log(req.body.connection)
-  console.log(req.params.id)
 
   // Build contact object
-
   try {
-    let user = await User.findById(req.params.id);
-    let newConnection = await User.findById(req.body.connection);
+    // Find requesting userID as the parameter and
+    // Connection id in the body
+    // make a list of IDs
+    let user = await User.findById(req.params.id).select('-password');
+    let newConnection = await User.findById(req.body.connection).select('-password');
     let connections = user.connections.map(conn => conn.id)
     let userConns = newConnection.connections.map(uConn => uConn._id)
-    console.log(user.connections)
-    console.log(newConnection)
-    console.log(connections)
 
+    //simple validation to avoid duplicates
     if (!user) return res.status(404).json({ msg: "User not found" });
     if (!newConnection) return res.status(404).json({msg:"Connection not found"});
-    if (connections.includes(newConnection.id)
-    || userConns.includes(user._id)) return res.status(404).json({msg: "Connection exists"});
+    if (connections.includes(newConnection.id) || userConns.includes(user._id)) 
+    return res.status(404).json({msg: "Connection exists"});
+
+    //Build objects for user connections and connection connections
+
 
     const userFields = {}
     let conn = { name: newConnection.name, id: newConnection._id, email:newConnection.email}
@@ -108,19 +108,18 @@ router.put("/:id", auth, async (req, res) => {
     let userConn = { name: user.name, id: user._id, email:user.email}
     connFields.connections = [...newConnection.connections,userConn]
 
+    // add them to their counter parts connections
     newConnection = await User.findByIdAndUpdate(
       newConnection.id,
       { $set: connFields },
       { new: true }
     );
-    console.log(newConnection)
+    
     user = await User.findByIdAndUpdate(
       req.params.id,
       { $set: userFields },
       { new: true }
-    );
-
-
+    ).select("-password");
     res.json(user);
   } catch (error) {
     console.error(error.message);

@@ -10,7 +10,7 @@ const UserDash = () => {
   useEffect(() => M.AutoInit()); //eslint-disable-next-line);
 
   return (
-    <div className="">
+    <div className="container">
       <div className="row ">
         <div className="col s8">
           <Jobs />

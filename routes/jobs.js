@@ -7,6 +7,7 @@ const auth = require("../middleware/auth");
 
 
 const Job = require("../models/Job");
+const User = require("../models/User");
 
 // @desc  GET USERS JOBS
 
@@ -41,11 +42,13 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, dateOpened, dueDate, content, files, filesData, links, closeDate } = req.body;
+    const { title, dueDate, content, filesData, contractor } = req.body;
+    console.log(contractor)
+    let fullContractor = await User.findById(contractor)
 
     try {
       newJob = new Job({
-        owner: req.user.id, title, dueDate, content, filesData
+        owner: req.user.id, title, dueDate, content, filesData, fullContractor
       });
 
       const job = await newJob.save();
@@ -62,7 +65,7 @@ router.post(
 // @desc  Add new user contact
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  console.log(req.body)
+
   const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate } = req.body;
 
   // Build contact object
@@ -77,7 +80,7 @@ router.put("/:id", auth, async (req, res) => {
   if (status) jobFields.status = status;
   if (closeDate) jobFields.closeDate = closeDate;
   if (urgent) jobFields.urgent = urgent;
-  
+
   try {
     let job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ msg: "Job not found" });
@@ -108,7 +111,7 @@ router.delete("/:id", auth, async (req, res) => {
     
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
-    // Make contact is users contact
+    // Make validation later
     // if (job.user.toString() !== req.user._id) {
     //   return res.status(401).json({ msg: "Not Authorized" });
     // }
@@ -127,16 +130,16 @@ router.post('/fileUpload',auth, async (req, res) => {
       return res.status(500).send({ msg: "file is not found" })
   }
       // accessing the file
-  const myFile = req.files.file;
+  const file = req.files.file;
 
   //  mv() method places the file inside public directory
-  myFile.mv(`${__dirname}/../client/files/${myFile.name}`, function (err) {
+  file.mv(`${__dirname}/../client/files/${file.name}`, function (err) {
       if (err) {
           console.log(err)
           return res.status(500).send({ msg: "Error occured" });
       }
       // returing the response with file path and name
-      return res.send({_id:uuidv4(),name: myFile.name, path: `${__dirname}/../client/files/${myFile.name}`});
+      return res.send({_id:uuidv4(),name: file.name, path: `${__dirname}/../client/files/${file.name}`});
   });
 })
 
