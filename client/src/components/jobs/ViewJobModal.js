@@ -4,14 +4,12 @@ import { connect } from "react-redux";
 import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { v4 as uuid } from "uuid";
-import { DatePicker } from "react-materialize";
 
-const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
-  console.log(user.connections);
+const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
   const [loading, setLoading] = useState("");
   const [job, setJob] = useState({
     title: "",
-    urgent: "off",
+    urgent: false,
     dueDate: "",
     content: "",
     filesData: [],
@@ -21,13 +19,12 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
   useEffect(() => {
     if (current) {
       setJob(current);
-      console.log(current.dueDate);
     }
   }, [current]);
   const onSave = (e) => {
     setJob({ ...job });
   };
-
+  console.log(job.urgent);
   const setCSelect = (e) => {
     const fullContractor = () => {
       return user.connections.filter(
@@ -57,30 +54,16 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     updateJob(job);
     clearCurrent();
   };
-  const onUrgent = (e) => {
-    setJob({ ...job, [e.target.name]: e.target.value });
-  };
 
   return (
     // Job Title
-    <div id="edit-job-modal" className="modal" style={modalStyle}>
+    <div id="view-job-modal" className="modal" style={modalStyle}>
       <div className="modal-content">
-        <h4>Edit Job</h4>
+        <h4>{job.title}</h4>
 
         <form onSubmit={onSubmit} className="form-container">
           {/* Title Row */}
           <div className="row">
-            <div className="input-field col s6 m6">
-              <input
-                type="text"
-                name="title"
-                value={job.title}
-                onChange={onChange}
-              />
-              <label className="active" htmlFor="title">
-                Job Title
-              </label>
-            </div>
             {user.role === "owner" && (
               <div className="input-field col s6 m6">
                 <select onChange={setCSelect} name="cSelect">
@@ -105,37 +88,14 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           </div>{" "}
           {/* Due Date and Time */}
           <div className="row">
-            <div className="col s6">
-              {/* <input
-                type="text"
+            <div className="col s4">
+              <input
+                type="date"
                 value={job.dueDate}
                 className="datepiker"
                 name="dueDate"
-                onChange={(newDate) => {
-                  onChange({
-                      target: {
-                          name: "dueDate",
-                          value: newDate
-                      }
-                  })
-              }} 
-
-              /> */}
-              <DatePicker
-                // label="dueDate"
-                name="dueDate"
-                value={job.dueDate}
-                id="dueDate"
-                onChange={(newDate) => {
-                  onChange({
-                    target: {
-                      name: "dueDate",
-                      value: newDate,
-                    },
-                  });
-                }}
+                onChange={onChange}
               />
-
               <label className="active" htmlFor="dueDate">
                 Due Date
               </label>
@@ -147,8 +107,8 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 <input
                   type="checkbox"
                   name="urgent"
-                  value={job.urgent}
-                  onChange={onUrgent}
+                  value={!job.urgent}
+                  onChange={onChange}
                 />
                 <span className="lever"></span>
                 Urgent
@@ -198,14 +158,25 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
             fList={job.filesData}
             getData={(data) => setJob({ ...job, filesData: data })}
           />
-          <div className="modal-footer">
-            <a
-              href="#!"
-              onClick={onSubmit}
-              className="waves-effect green waves-light btn-large"
-            >
-              Save Job
-            </a>
+          {/* Footer */}
+          {user.role === "owner" ? (
+            <div className="modal-footer">
+              <a
+                href="#!"
+                onClick={onSubmit}
+                className="waves-effect green waves-light btn-large"
+              >
+                Save Job
+              </a>
+              <a
+                href="#!"
+                onClick={onClose}
+                className="waves-effect modal-close green waves-light btn-large"
+              >
+                Job List
+              </a>
+            </div>
+          ) : (
             <a
               href="#!"
               onClick={onClose}
@@ -213,7 +184,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
             >
               Job List
             </a>
-          </div>
+          )}
         </form>
       </div>
     </div>
@@ -229,5 +200,5 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 export default connect(mapStateToProps, { updateJob, clearCurrent })(
-  EditJobModal
+  ViewJobModal
 );

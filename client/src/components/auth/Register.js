@@ -59,12 +59,12 @@ const Register = (props) => {
         <div className="row input-field col s12">
         <select
             name="role"
-            value={role}
+            value=''
             className="input-field col s12"
             onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
           >
              <option value='' disabled >Choose Account Type</option>
-            <option value="user" >
+            <option value="owner" >
               User{" "}
             </option>
             <option value="contractor" >

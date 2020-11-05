@@ -47,12 +47,6 @@ const Navbar = ({ title, icon, logout, isAuthenticated, user }) => {
   );
   return (
     
-    // <div className="nav-wrapper">
-    //   <h1>
-    //     <i className={icon} /> {title}
-    //   </h1>
-    //   <ul>{isAuthenticated ? authLinks : guestLinks}</ul>
-    // </div>
     <div className="navbar-fixed">
       <nav>
       <div className="nav-wrapper green">

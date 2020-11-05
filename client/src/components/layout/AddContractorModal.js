@@ -42,6 +42,7 @@ const AddContractorModal = ({
     add([...user.connections, newConn]);
     // set selected to null
     setSelected("");
+    window.location.reload()
   };
 
   return (

@@ -5,9 +5,14 @@ import { connect } from "react-redux";
 import { deleteJob, setCurrent, clearCurrent } from "../../actions/jobActions";
 import M from "materialize-css/dist/js/materialize.min.js";
 
-const JobItem = ({ role, job, deleteJob, setCurrent, clearCurrent }) => {
-
-
+const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
+  const contractor =
+    user.role === "owner"
+      ? user.connections.filter(
+          (connection) => connection.id === job.contractor
+        )
+      : user.connections.filter((connection) => connection.id === job.owner);
+  console.log(contractor);
   const onDelete = () => {
     deleteJob(job._id);
     M.toast({ html: "Job Deleted" });
@@ -19,7 +24,7 @@ const JobItem = ({ role, job, deleteJob, setCurrent, clearCurrent }) => {
         {/* title row */}
         <li className="collection-item">
           <a
-            href="#edit-job-modal"
+            href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
             className={`modal-trigger ${
               job.urgent === "on" ? "red-text" : "blue-text"
             }`}
@@ -27,38 +32,48 @@ const JobItem = ({ role, job, deleteJob, setCurrent, clearCurrent }) => {
           >
             <span className="card-title text-center">{job.title}</span>
           </a>
-          <a
-            href="#!"
-            onClick={onDelete}
-            className="btn-floating right red wave-effect waves-light btn-small"
-          >
-            <i className="material-icons right grey-text">delete</i>
-          </a>
+          {user.role === "owner" && (
+            <a
+              href="#!"
+              onClick={onDelete}
+              className="btn-floating right red wave-effect waves-light btn-small"
+            >
+              <i className="material-icons right grey-text">delete</i>
+            </a>
+          )}
           <a
             onClick={() => setCurrent(job)}
-            className="btn-floating green right waves-effect waves-light btn-small"
+            className="modal-trigger btn-floating green right waves-effect waves-light btn-small"
+            href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
           >
-            <i className="material-icons">edit</i>
+            <i className="material-icons">{`${
+              user.role === "owner" ? "edit" : "search"
+            }`}</i>
           </a>
         </li>
         {/* status row */}
         <li className="collection-item">
           Status <span className="new badge green"></span>
         </li>
-        <li className="collection-item">          
-            Contractor <span>{job.contractor.name ? (
-              <div className="chip">
-                {/* add from profile later */}
-                <img src="images/yuna.jpg" alt="Contact Person"></img>
-                {job.contractor.name}
-              </div>
-            ) : (
-              <span className="badge" data-badge-caption="">
-                Not yet assigned
-              </span>
-            )}
-          </span>
-        </li>
+        {/* counter owner*/}
+        
+          <li className="collection-item">{user.role === 'owner' ? (
+            'Contractor'):('Owner')}
+            <span>
+              {contractor.length > 0 ? (
+                <div className="chip right">
+                  {/* add from profile later */}
+                  <img src="images/yuna.jpg" alt=":-)"></img>
+                  {contractor[0].name}
+                </div>
+              ) : (
+                <span className="badge" data-badge-caption="">
+                  Not yet assigned
+                </span>
+              )}
+            </span>
+          </li>
+        
         {/* files row */}
         <li className="collection-item">
           Job Files
@@ -68,9 +83,9 @@ const JobItem = ({ role, job, deleteJob, setCurrent, clearCurrent }) => {
         </li>
         <li className="collection-item">
           Last Update on{" "}
-          <Moment format="MMMM Do YYYY">{job.lastUpdate.date}</Moment>
+          <Moment format="MMM Do YY">{job.lastUpdate.date}</Moment>
           <span className="badge" data-badge-caption="">
-          by {job.lastUpdate.by}
+            by {job.lastUpdate.by}
           </span>
         </li>
       </ul>
@@ -85,5 +100,6 @@ JobItem.propTypes = {
 
 const mapStateToProps = (state) => ({
   role: state.auth.role,
+  user: state.auth.user,
 });
 export default connect(mapStateToProps, { deleteJob, setCurrent })(JobItem);

@@ -4,11 +4,13 @@ import { getJobs } from "../../actions/jobActions";
 import JobItem from "./JobItem";
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
-import { v4 as uuid } from "uuid";
-import AddJobModal from "../jobs/AddJobModal";
+import AddJobModal from "./AddJobModalAhead";
 import EditJobModal from "../jobs/EditJobModal";
+import ViewJobModal from "../jobs/ViewJobModal";
+import FileUpload from "./FileUpload";
 
-const Jobs = ({ jobs, getJobs }) => {
+
+const Jobs = ({ user, jobs, getJobs }) => {
   useEffect(() => {
     getJobs();
     //eslint-disable-next-line
@@ -17,9 +19,12 @@ const Jobs = ({ jobs, getJobs }) => {
     <Fragment>
       <AddJobModal />
       <EditJobModal />
+      <ViewJobModal />
+      <FileUpload />
+
       <ul className="collection with-headers">
         <li className="collection-header">
-        <ActionButton icon='add' side="right" color="green" action="#add-job-modal" />
+{  user.role === 'owner' && <ActionButton icon='add' side="right" color="green" action="#add-job-modal" />}
           <span>            
             <h4 className="center">Jobs</h4>
           </span>

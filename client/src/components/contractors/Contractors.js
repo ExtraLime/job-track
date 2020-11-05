@@ -7,7 +7,7 @@ import axios from "axios";
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
 import { v4 as uuid } from "uuid";
-import { set } from "mongoose";
+
 
 const Contractors = ({ user }) => {
   const [connections, setConnections] = useState([...user.connections]);
@@ -15,7 +15,7 @@ const Contractors = ({ user }) => {
 
   useEffect(() => {
     setContractors([contractors]);
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
   return (
     <Fragment>

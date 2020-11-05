@@ -36,7 +36,7 @@ const FileUpload = (props) => {
       const formData = new FormData();
 console.log(files[i])
       formData.append("file", files[i]); // appending file
-      console.log(formData)
+
       axios
         .post("api/jobs/fileUpload", formData, {
           onUploadProgress: (ProgressEvent) => {
@@ -46,7 +46,7 @@ console.log(files[i])
             setProgress(progress);
           },
         })
-        .then((res) => {console.log(res)
+        .then((res) => {
           getFile({
             name: res.data.name,
             path: res.data.path,
@@ -59,15 +59,10 @@ console.log(files[i])
           });
           fileNames.push(res.data.name);
           setFilelist([fileNames]);
-          console.log(fileNames)
-          console.log(fileList)
           props.getData(props.fList ? [...props.fList, ...fileList]:fileList);
         })
         .catch((err) => console.log(err));
     }
-// setFilelist(fileList);
-//     props.getData(props.fList ? [...props.fList, ...fileList]:fileList);
-//     setFilelist(fileNames);
     setLoading(false);
     clearUpload();
   };
@@ -76,7 +71,7 @@ console.log(files[i])
     <div className="row">
       <div className="file-field input-field">
         <div className="btn green">
-          <span>Browse</span>
+          <span> <i className="material-icons right">search</i>Browse</span>
           <input
             name="files"
             type="file"
@@ -102,7 +97,7 @@ value={filelist}
         </div>
         </div>
         <div onClick={uploadFiles} className="btn green">
-          <span>Upload</span>{" "}
+          <span> <i className="material-icons right">file_upload</i>Upload</span>{" "}
         </div>
       </div>
       

@@ -16,12 +16,28 @@ const User = require("../models/User");
 
 router.get("/", auth, async (req, res) => {
   try {
-    console.log(req.user.id)
+    const user = await User.findById(req.user.id)
+    console.log(user.role)
+    if(user.role === 'contractor'){
+    console.log('contractor')
+// need a solution to store contractor information either here or pull it from state in jobitem
+      const jobs = await Job.find({ contractor: req.user.id  })
+      res.json(jobs);
+
+    }else if (user.role === 'owner') {
+    console.log('owner')
+
     const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
+  
     res.json(jobs);
-    console.log(jobs.data)
+    console.log(jobs)
+
+  }else { res.status(500).send("NO User")}
+    
+    
+
   } catch (error) {
-    console.error(error.message);
+    console.log(error);
     res.status(500).send("Server Error");
   }
 });
@@ -43,12 +59,12 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     const { title, dueDate, content, filesData, contractor } = req.body;
-    console.log(contractor)
-    let fullContractor = await User.findById(contractor)
+
+    let fullContractor = await User.findById(contractor.id).select(["name","email"])
 
     try {
       newJob = new Job({
-        owner: req.user.id, title, dueDate, content, filesData, fullContractor
+        owner: req.user.id, title, dueDate, content, filesData, contractor: fullContractor
       });
 
       const job = await newJob.save();
@@ -136,9 +152,9 @@ router.post('/fileUpload',auth, async (req, res) => {
   file.mv(`${__dirname}/../client/files/${file.name}`, function (err) {
       if (err) {
           console.log(err)
-          return res.status(500).send({ msg: "Error occured" });
+          return res.status(500).send({ msg: "Error occurred" });
       }
-      // returing the response with file path and name
+      // returning the response with file path and name
       return res.send({_id:uuidv4(),name: file.name, path: `${__dirname}/../client/files/${file.name}`});
   });
 })
