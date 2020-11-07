@@ -134,7 +134,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                   type="checkbox"
                   name="urgent"
                   value={job.urgent}
-                  onChange={e => setJob({ ...job, [e.target.name]: !e.target.value })}
+                  onChange={e => setJob({ ...job, [e.target.name]: !job.urgent })}
                   checked={job.urgent}
                 />
                 <span className="lever"></span>

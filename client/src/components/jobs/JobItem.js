@@ -41,7 +41,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
         {/* status and actions row */}
         <li className="collection-item">
           <div className="row" style={{ marginBottom: "0px" }}>
-            <div className="col s6">
+            <div className="col s6" style={{ justifyContent: "space-between" }}>
               Status: <span className="new badge green"></span>
               {job.urgent && (
                 <span
@@ -50,7 +50,10 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
                 ></span>
               )}
             </div>
-            <div className="col s6">
+            <div
+              className="col s6 valign-wrapper"
+              style={{ justifyContent: "space-between" }}
+            >
               Actions:{" "}
               <span>
                 {user.role === "owner" && (
@@ -76,55 +79,64 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
           </div>
         </li>
 
-        {/* status row */}
+        {/* Due Date & counter owner row */}
         <li className="collection-item">
           <div className="row valign-wrapper" style={{ marginBottom: "0px" }}>
-            <div className="col s6">
+            <div className="col s6 ">
               Due Date:{" "}
               <span
                 className="badge"
                 data-badge-caption={job.dueDate.toString().substring(0, 10)}
               ></span>
             </div>
-            <div className="col s6 valign-wrapper">
-            {user.role === "owner" ? "Contractor" : "Owner"}
-            <span className='right-align'>
-              {contractor.length > 0 ? (
-                <div className="chip right">
-                  {/* add from profile later */}
-                  <img src="images/yuna.jpg" alt=":-)"></img>
-                  {contractor[0].name}
-                </div>
-              ) : (
-                <span className="badge" data-badge-caption="">
-                  Not yet assigned
-                </span>
-              )}
-            </span>
+
+            <div
+              className="col s6 valign-wrapper"
+              style={{ justifyContent: "space-between" }}
+            >
+              {user.role === "owner" ? "Contractor:" : "Owner:"}
+              <span className="right-align">
+                {contractor.length > 0 ? (
+                  <div className="chip right">
+                    {/* add from profile later */}
+                    <img src="images/yuna.jpg" alt=":-)"></img>
+                    {contractor[0].name}
+                  </div>
+                ) : (
+                  <span
+                    className="badge"
+                    data-badge-caption="Not yet assigned"
+                  ></span>
+                )}
+              </span>
             </div>
           </div>
         </li>
         {/* counter owner*/}
 
         <li className="collection-item">
-          <div className="row" style={{ marginBottom: "0px" }}>
-
+          <div className="row valign-wrapper" style={{ marginBottom: "0px" }}>
+            <div className="col s6 ">
+              Job Files
+              <span className="badge" data-badge-caption="files">
+                {job.filesData.length}
+              </span>
+            </div>
+          </div>
+          <div className="col s6 ">
+          Last Update on{" "} <a className='btn tooltipped' data-position='top' data-tooltip=
+          {job.lastUpdate.by}> 
+          <Moment format="MMM Do YYYY">{job.lastUpdate.date}</Moment>
+          <span className="badge" data-badge-caption="">
+            by {job.lastUpdate.by}
+          </span></a>
           </div>
         </li>
 
-        {/* files row */}
+        {/* updates link row */}
+        <li className="collection-item"></li>
         <li className="collection-item">
-          Job Files
-          <span className="badge" data-badge-caption="files">
-            {job.filesData.length}
-          </span>
-        </li>
-        <li className="collection-item">
-          Last Update on{" "}
-          <Moment format="MMM Do YY">{job.lastUpdate.date}</Moment>
-          <span className="badge" data-badge-caption="">
-            by {job.lastUpdate.by}
-          </span>
+          
         </li>
       </ul>
     </li>

@@ -90,7 +90,6 @@ router.put("/:id", auth, async (req, res) => {
   if (title) jobFields.title = title;
   if (content) jobFields.content = content;
   if (filesData) jobFields.filesData = filesData;
-  // if (links) jobFields.links = links;
   if (dueDate) jobFields.dueDate = dueDate;
   if (lastUpdate) jobFields.lastUpdate = lastUpdate;
   if (contractor) jobFields.contractor = contractor;
