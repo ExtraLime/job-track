@@ -4,10 +4,10 @@ import { getJobs } from "../../actions/jobActions";
 import JobItem from "./JobItem";
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
-import AddJobModal from "./AddJobModalAhead";
+import AddJobModal from "./AddJobModal";
 import EditJobModal from "../jobs/EditJobModal";
 import ViewJobModal from "../jobs/ViewJobModal";
-import FileUpload from "./FileUpload";
+
 
 
 const Jobs = ({ user, jobs, getJobs }) => {
@@ -20,7 +20,6 @@ const Jobs = ({ user, jobs, getJobs }) => {
       <AddJobModal />
       <EditJobModal />
       <ViewJobModal />
-      <FileUpload />
 
       <ul className="collection with-headers">
         <li className="collection-header">

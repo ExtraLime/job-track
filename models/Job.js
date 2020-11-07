@@ -24,9 +24,9 @@ const JobSchema = mongoose.Schema({
  
   },
   urgent: {
-    type: String,
+    type: Boolean,
     required:true,
-    default:"off"
+    default:false
   },
   content: {
     type: String,

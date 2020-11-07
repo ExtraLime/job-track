@@ -23,43 +23,72 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
       <ul className="collection">
         {/* title row */}
         <li className="collection-item">
-          <a
-            href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
-            className={`modal-trigger ${
-              job.urgent === "on" ? "red-text" : "blue-text"
-            }`}
-            onClick={() => setCurrent(job)}
-          >
-            <span className="card-title text-center">{job.title}</span>
-          </a>
-          {user.role === "owner" && (
+          <div className="row" style={{ marginBottom: "0px" }}>
             <a
-              href="#!"
-              onClick={onDelete}
-              className="btn-floating right red wave-effect waves-light btn-small"
+              href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
+              className={`modal-trigger ${
+                job.urgent ? "red-text" : "blue-text"
+              }`}
+              onClick={() => setCurrent(job)}
             >
-              <i className="material-icons right grey-text">delete</i>
+              <span className="center-align card-title text-center">
+                <h5 style={{ margin: "0 0 0 0" }}>{job.title}</h5>
+              </span>
             </a>
-          )}
-          <a
-            onClick={() => setCurrent(job)}
-            className="modal-trigger btn-floating green right waves-effect waves-light btn-small"
-            href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
-          >
-            <i className="material-icons">{`${
-              user.role === "owner" ? "edit" : "search"
-            }`}</i>
-          </a>
+          </div>
         </li>
+
+        {/* status and actions row */}
+        <li className="collection-item">
+          <div className="row" style={{ marginBottom: "0px" }}>
+            <div className="col s6">
+              Status: <span className="new badge green"></span>
+              {job.urgent && (
+                <span
+                  data-badge-caption="urgent"
+                  className="new badge red"
+                ></span>
+              )}
+            </div>
+            <div className="col s6">
+              Actions:{" "}
+              <span>
+                {user.role === "owner" && (
+                  <a
+                    href="#!"
+                    onClick={onDelete}
+                    className="btn-floating right red wave-effect waves-light btn-small"
+                  >
+                    <i className="material-icons">delete</i>
+                  </a>
+                )}
+                <a
+                  onClick={() => setCurrent(job)}
+                  className="modal-trigger right btn-floating green waves-effect waves-light btn-small"
+                  href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
+                >
+                  <i className="material-icons">{`${
+                    user.role === "owner" ? "edit" : "search"
+                  }`}</i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </li>
+
         {/* status row */}
         <li className="collection-item">
-          Status <span className="new badge green"></span>
-        </li>
-        {/* counter owner*/}
-        
-          <li className="collection-item">{user.role === 'owner' ? (
-            'Contractor'):('Owner')}
-            <span>
+          <div className="row valign-wrapper" style={{ marginBottom: "0px" }}>
+            <div className="col s6">
+              Due Date:{" "}
+              <span
+                className="badge"
+                data-badge-caption={job.dueDate.toString().substring(0, 10)}
+              ></span>
+            </div>
+            <div className="col s6 valign-wrapper">
+            {user.role === "owner" ? "Contractor" : "Owner"}
+            <span className='right-align'>
               {contractor.length > 0 ? (
                 <div className="chip right">
                   {/* add from profile later */}
@@ -72,8 +101,17 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
                 </span>
               )}
             </span>
-          </li>
-        
+            </div>
+          </div>
+        </li>
+        {/* counter owner*/}
+
+        <li className="collection-item">
+          <div className="row" style={{ marginBottom: "0px" }}>
+
+          </div>
+        </li>
+
         {/* files row */}
         <li className="collection-item">
           Job Files

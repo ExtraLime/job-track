@@ -58,13 +58,13 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, dueDate, content, filesData, contractor } = req.body;
+    const { title, dueDate, content, filesData, contractor, urgent } = req.body;
 
     let fullContractor = await User.findById(contractor.id).select(["name","email"])
 
     try {
       newJob = new Job({
-        owner: req.user.id, title, dueDate, content, filesData, contractor: fullContractor
+        owner: req.user.id, title, dueDate, content, urgent, filesData, contractor: fullContractor
       });
 
       const job = await newJob.save();
@@ -81,6 +81,7 @@ router.post(
 // @desc  Add new user contact
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
+  console.log(req.body)
 
   const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate } = req.body;
 
@@ -95,8 +96,8 @@ router.put("/:id", auth, async (req, res) => {
   if (contractor) jobFields.contractor = contractor;
   if (status) jobFields.status = status;
   if (closeDate) jobFields.closeDate = closeDate;
-  if (urgent) jobFields.urgent = urgent;
-
+  if (urgent) jobFields.urgent = Boolean( urgent);
+console.log(jobFields)
   try {
     let job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ msg: "Job not found" });
@@ -105,6 +106,7 @@ router.put("/:id", auth, async (req, res) => {
     // if (job.user.toString() !== req.user.id) {
     //   return res.status(401).json({ msg: "Not Authorized" });
     // }
+    
 
     job = await Job.findByIdAndUpdate(
       req.params.id,

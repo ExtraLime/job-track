@@ -5,6 +5,7 @@ import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { v4 as uuid } from "uuid";
 import { DatePicker } from "react-materialize";
+import { Editor } from "@tinymce/tinymce-react";
 
 const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
   console.log(user.connections);
@@ -17,11 +18,11 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     filesData: [],
     contractor: "",
   });
+  const today = new Date();
 
   useEffect(() => {
     if (current) {
       setJob(current);
-      console.log(current.dueDate);
     }
   }, [current]);
   const onSave = (e) => {
@@ -58,7 +59,11 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     clearCurrent();
   };
   const onUrgent = (e) => {
-    setJob({ ...job, [e.target.name]: e.target.value });
+
+    setJob({ ...job, urgent: !job.urgent });
+  };
+  const onEditorChange = (content, editor) => {
+    setJob({ ...job, content: content });
   };
 
   return (
@@ -77,9 +82,6 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 value={job.title}
                 onChange={onChange}
               />
-              <label className="active" htmlFor="title">
-                Job Title
-              </label>
             </div>
             {user.role === "owner" && (
               <div className="input-field col s6 m6">
@@ -106,39 +108,23 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           {/* Due Date and Time */}
           <div className="row">
             <div className="col s6">
-              {/* <input
-                type="text"
-                value={job.dueDate}
-                className="datepiker"
-                name="dueDate"
-                onChange={(newDate) => {
-                  onChange({
-                      target: {
-                          name: "dueDate",
-                          value: newDate
-                      }
-                  })
-              }} 
-
-              /> */}
               <DatePicker
-                // label="dueDate"
+               options={{minDate:today}}
+                type="text"
+                className="text"
+                label="Due Date"
                 name="dueDate"
-                value={job.dueDate}
+                value={job.dueDate = ''? job.dueDate:job.dueDate}
                 id="dueDate"
-                onChange={(newDate) => {
+                onChange={(dueDate) => {
                   onChange({
                     target: {
                       name: "dueDate",
-                      value: newDate,
+                      value: new Date(dueDate),
                     },
                   });
                 }}
               />
-
-              <label className="active" htmlFor="dueDate">
-                Due Date
-              </label>
             </div>
             {/* Urgent */}
             <div className="switch left">
@@ -148,7 +134,8 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                   type="checkbox"
                   name="urgent"
                   value={job.urgent}
-                  onChange={onUrgent}
+                  onChange={e => setJob({ ...job, [e.target.name]: !e.target.value })}
+                  checked={job.urgent}
                 />
                 <span className="lever"></span>
                 Urgent
@@ -158,13 +145,26 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           {/* Content */}
           <div className="row">
             <div className="input-field col s12">
-              <textarea
-                name="content"
-                id="content"
+            <Editor
+                outputFormat="text"
+                onEditorChange={onEditorChange}
+                textareaName="content"
+                initialValue="<p>This is the initial content of the editor</p>"
                 value={job.content}
-                className="materialize-textarea"
-                onChange={onChange}
-              ></textarea>
+                init={{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | formatselect | bold italic backcolor | \
+             alignleft aligncenter alignright alignjustify | \
+             bullist numlist outdent indent | removeformat | help",
+                }}
+              />
               <label className="active" htmlFor="content">
                 Job Details
               </label>
