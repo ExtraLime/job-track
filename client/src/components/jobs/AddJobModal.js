@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
-import Moment from "react-moment";
+
 import { DatePicker } from "react-materialize";
 import { addJob, clearCurrent } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";

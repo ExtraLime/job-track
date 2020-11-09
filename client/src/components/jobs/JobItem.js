@@ -41,14 +41,14 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
         {/* status and actions row */}
         <li className="collection-item">
           <div className="row" style={{ marginBottom: "0px" }}>
-            <div className="col s6" style={{ justifyContent: "space-between" }}>
-              Status: <span className="new badge green"></span>
+            <div className="col s6 valign-wrapper" style={{ justifyContent: "space-between" }}>
+              Status: <div><span className="new badge green"></span>
               {job.urgent && (
                 <span
                   data-badge-caption="urgent"
                   className="new badge red"
                 ></span>
-              )}
+              )}</div>
             </div>
             <div
               className="col s6 valign-wrapper"
@@ -82,7 +82,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
         {/* Due Date & counter owner row */}
         <li className="collection-item">
           <div className="row valign-wrapper" style={{ marginBottom: "0px" }}>
-            <div className="col s6 ">
+            <div className="col s6 valign-wrapper" style={{justifyContent:'space-between'}}>
               Due Date:{" "}
               <span
                 className="badge"
@@ -116,28 +116,22 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
 
         <li className="collection-item">
           <div className="row valign-wrapper" style={{ marginBottom: "0px" }}>
-            <div className="col s6 ">
+          <div className="col s6 left-align valign-wrapper" style={{justifyContent:'space-between'}}>
+          Last Update on {" "}
+          <Moment className='right-align' format="MMM Do YYYY">{job.lastUpdate.date}</Moment>
+                 </div>
+            <div className="col s6 valign-wrapper" style={{justifyContent:'space-between'}}>
               Job Files
               <span className="badge" data-badge-caption="files">
                 {job.filesData.length}
               </span>
             </div>
           </div>
-          <div className="col s6 ">
-          Last Update on{" "} <a className='btn tooltipped' data-position='top' data-tooltip=
-          {job.lastUpdate.by}> 
-          <Moment format="MMM Do YYYY">{job.lastUpdate.date}</Moment>
-          <span className="badge" data-badge-caption="">
-            by {job.lastUpdate.by}
-          </span></a>
-          </div>
         </li>
 
         {/* updates link row */}
-        <li className="collection-item"></li>
-        <li className="collection-item">
-          
-        </li>
+        <li className="collection-item">View Updates</li>
+
       </ul>
     </li>
   );

@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const AWS = require('aws-sdk')
+const config = require('../config/default.json')
+const fs = require('fs');
+const fileType = require('file-type');
+const multiparty = require('multiparty');
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
@@ -8,6 +13,11 @@ const auth = require("../middleware/auth");
 
 const Job = require("../models/Job");
 const User = require("../models/User");
+
+AWS.config.update({
+  accessKeyId: config.AWS_ACCESS_KEY_ID,
+  secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
+});
 
 // @desc  GET USERS JOBS
 
@@ -144,21 +154,97 @@ router.delete("/:id", auth, async (req, res) => {
 router.post('/fileUpload',auth, async (req, res) => {
 
   if (!req.files) {
-      return res.status(500).send({ msg: "file is not found" })
+      return res.status(500).send({ msg: "file not found" })
   }
       // accessing the file
   const file = req.files.file;
+  console.log(Object.keys(file))
+  const s3 = new AWS.S3({
+    accessKeyId:config.AWS_ACCESS_KEY_ID,
+    secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
+    region: 'us-east-1',
+    }
+  )
+  if(!s3){console.log("no s3 found")}
+    fileId = uuidv4()
+  const params = {
+    Key:    fileId,
+    Bucket: config.BUCKETEER_BUCKET_NAME,
+    Body:   file.data,
+  };
+ 
+
+  s3.putObject(params, function put(err, data) {
+    if (err) {
+      console.log(err, err.stack);
+      return;
+    } else {
+      console.log("put " +data.ETag, params.Key);
+    }
+  
+    delete params.Body;
+    s3.getObject(params, function put(err, data) {
+      if (err) console.log(err, err.stack);
+      else     console.log(Object.keys(data));
+  
+      console.log("data body " + data.ETag);
+      return res.send({_id:data.ETag, Key:params.fileID, name:file.name})
+    });
+
+    
+  });
 
   //  mv() method places the file inside public directory
-  file.mv(`${__dirname}/../client/files/${file.name}`, function (err) {
-      if (err) {
-          console.log(err)
-          return res.status(500).send({ msg: "Error occurred" });
-      }
-      // returning the response with file path and name
-      return res.send({_id:uuidv4(),name: file.name, path: `${__dirname}/../client/files/${file.name}`});
-  });
+  // file.mv(`${__dirname}/../client/files/${file.name}`, function (err) {
+  //     if (err) {
+  //         console.log(err)
+  //         return res.status(500).send({ msg: "Error occurred" });
+  //     }
+  //     // returning the response with file path and name
+  //     return res.send({_id:uuidv4(),name: file.name, path: `${__dirname}/../client/files/${file.name}`});
+  // });
 })
+
+
+// router.post('/fileUpload',auth, async (req, res) => {
+
+//   if (!req.files) {
+//       return res.status(500).send({ msg: "file not found" })
+//   }
+//       // accessing the file
+//   const file = req.files.file;
+
+//   const s3 = new AWS.S3()
+// const uploadFile = (buffer, name, type) => {
+//   const params = {
+//     ACL: 'public-read',
+//     Body: buffer,
+//     Bucket: config.BUCKETEER_BUCKET_NAME,
+//     ContentType: type.mime,
+//     Key: `${name}.${type.ext}`,
+//   };
+//   return s3.upload(params).promise();
+// };
+// const form = new multiparty.Form();
+//   form.parse(req, async (error, fields, files) => {
+//     if (error) {
+//       return res.status(500).send(error);
+//     };
+//     try {
+//       const path = files.file[0].path;
+//       const buffer = fs.readFileSync(path);
+//       const type = await FileType.fromBuffer(buffer);
+//       const fileName = `bucketFolder/${Date.now().toString()}`;
+//       const data = await uploadFile(buffer, fileName, type);
+//       return res.status(200).send(data);
+//     } catch (err) {
+//       return res.status(500).send(err);
+//     }
+//   });
+ 
+// })
+
+
 
 
 module.exports = router;
