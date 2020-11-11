@@ -91,7 +91,7 @@ router.post(
 // @desc  Add new user contact
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-  console.log(req.body)
+
 
   const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate } = req.body;
 
@@ -105,8 +105,8 @@ router.put("/:id", auth, async (req, res) => {
   if (contractor) jobFields.contractor = contractor;
   if (status) jobFields.status = status;
   if (closeDate) jobFields.closeDate = closeDate;
-  if (urgent) jobFields.urgent = Boolean( urgent);
-console.log(jobFields)
+  if (urgent) jobFields.urgent = urgent;
+
   try {
     let job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ msg: "Job not found" });
@@ -171,6 +171,7 @@ router.post('/fileUpload',auth, async (req, res) => {
     Key:    fileId,
     Bucket: config.BUCKETEER_BUCKET_NAME,
     Body:   file.data,
+    acl: 'public'
   };
  
 
@@ -187,8 +188,8 @@ router.post('/fileUpload',auth, async (req, res) => {
       if (err) console.log(err, err.stack);
       else     console.log(Object.keys(data));
   
-      console.log("data body " + data.ETag);
-      return res.send({_id:data.ETag, Key:params.fileID, name:file.name})
+
+      return res.send({_id:data.ETag, Key:params.Key, name:file.name})
     });
 
     

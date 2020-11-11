@@ -7,6 +7,7 @@ import { v4 as uuid } from "uuid";
 import { DatePicker } from "react-materialize";
 import { Editor } from "@tinymce/tinymce-react";
 
+
 const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
   console.log(user.connections);
   const [loading, setLoading] = useState("");
@@ -19,7 +20,6 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     contractor: "",
   });
   const today = new Date();
-
   useEffect(() => {
     if (current) {
       setJob(current);
@@ -180,11 +180,11 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 <div className="collection">
                   <ul>
                     {job.filesData.map((file) => (
-                      <li key={uuid()}>
+                      <li key={file._id}>
                         <div className="collection-item">
-                          <span>
-                            {file.name} <span className="badge green">Ok</span>
-                          </span>
+                          <a href={`s3://bucketeer-1806fb4e-1442-4819-9b7d-74b569ee0938/${file.Key}`} download><span>
+                            {file.name} <span className="badge green">ok</span>
+                          </span></a>
                         </div>
                       </li>
                     ))}
