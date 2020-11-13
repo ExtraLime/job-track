@@ -3,17 +3,16 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
-import { v4 as uuid } from "uuid";
 import { DatePicker } from "react-materialize";
 import { Editor } from "@tinymce/tinymce-react";
-import axios from "axios";
+
 
 const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
-  console.log(user.connections);
+
   const [loading, setLoading] = useState("");
   const [job, setJob] = useState({
     title: "",
-    urgent: "off",
+    urgent: "",
     dueDate: "",
     content: "",
     filesData: [],
@@ -58,7 +57,10 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     clearCurrent();
   };
   const onUrgent = (e) => {
-    setJob({ ...job, urgent: !job.urgent });
+    job.urgent === 'off' ?
+    setJob({ ...job, urgent: 'on' }):
+    setJob({ ...job, urgent: 'off' })
+    console.log(job)
   };
   const onEditorChange = (content, editor) => {
     setJob({ ...job, content: content });
@@ -132,10 +134,9 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                   type="checkbox"
                   name="urgent"
                   value={job.urgent}
-                  onChange={(e) =>
-                    setJob({ ...job, [e.target.name]: !job.urgent })
-                  }
-                  checked={job.urgent}
+                  onChange={onUrgent}
+                  
+                  checked={job.urgent==='off'? (false):(true)}
                 />
                 <span className="lever"></span>
                 Urgent

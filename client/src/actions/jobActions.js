@@ -108,6 +108,7 @@ export const getJobs = () => async (dispatch) => {
           "x-auth-token": localStorage.token,
         } 
       };
+      console.log(job._id)
       const res = await axios.put(`api/jobs/${job._id}`,job, config)   
       dispatch({
         type: EDIT_JOB,

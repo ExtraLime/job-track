@@ -3,18 +3,18 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 
 import { DatePicker } from "react-materialize";
-import { addJob, clearCurrent } from "../../actions/jobActions";
+import { addJob, clearCurrent, getJobs } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { setAlert } from "../../actions/alertsActions";
 import { v4 as uuid } from "uuid";
 import { Editor } from "@tinymce/tinymce-react";
 
-const AddJobModal = ({ user, addJob, clearCurrent, setAlert, removeAlert }) => {
+const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAlert }) => {
   const [loading, setLoading] = useState("");
   const [jobStatus, setJobStatus] = useState(false);
   const [job, setJob] = useState({
     title: "",
-    urgent: false,
+    urgent: "off",
     dueDate: "",
     content: "",
     filesData: [],
@@ -28,7 +28,7 @@ const AddJobModal = ({ user, addJob, clearCurrent, setAlert, removeAlert }) => {
   const onSubmit = (e) => {
     setJob({
       title: "",
-      urgent: false,
+      urgent: 'off',
       dueDate: "",
       content: "",
       filesData: [],
@@ -70,14 +70,14 @@ const AddJobModal = ({ user, addJob, clearCurrent, setAlert, removeAlert }) => {
     setJob({ ...job, content: content });
   };
   const onUrgent = (e) => {
-    console.log(job)
-
-    setJob({ ...job, urgent: !job.urgent });
+    job.urgent === 'off' ?
+    setJob({ ...job, urgent: 'on' }):
+    setJob({ ...job, urgent: 'off' })
     console.log(job)
   };
   const onClose = (e) => {
     setJobStatus(false);
-    window.location.reload();
+    getJobs();
   };
   return (
     // Job Title
@@ -154,7 +154,7 @@ const AddJobModal = ({ user, addJob, clearCurrent, setAlert, removeAlert }) => {
                   name="urgent"
                   value={job.urgent}
                   onChange={onUrgent}
-                  checked={job.urgent}
+                  checked={job.urgent==='off'? (false):(true)}
                 />
                 <span className="lever"></span>
                 Urgent
@@ -247,6 +247,6 @@ const mapStateToProps = (state) => ({
   error: state.error,
   user: state.auth.user,
 });
-export default connect(mapStateToProps, { clearCurrent, addJob, setAlert })(
+export default connect(mapStateToProps, {getJobs, clearCurrent, addJob, setAlert })(
   AddJobModal
 );

@@ -4,16 +4,18 @@ import { connect } from "react-redux";
 import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { v4 as uuid } from "uuid";
+import { Editor } from "@tinymce/tinymce-react";
 
 const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
   const [loading, setLoading] = useState("");
   const [job, setJob] = useState({
     title: "",
-    urgent: false,
+    urgent: "",
     dueDate: "",
     content: "",
     filesData: [],
     contractor: "",
+    status:''
   });
 
   useEffect(() => {
@@ -21,19 +23,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
       setJob(current);
     }
   }, [current]);
-  const onSave = (e) => {
-    setJob({ ...job });
-  };
-  console.log(job.urgent);
-  const setCSelect = (e) => {
-    const fullContractor = () => {
-      return user.connections.filter(
-        (connection) => connection.id === e.target.value
-      );
-    };
-    const temp = fullContractor();
-    setJob({ ...job, contractor: { ...temp[0], _id: temp[0].id } });
-  };
+
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
@@ -54,6 +44,9 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
     updateJob(job);
     clearCurrent();
   };
+  const onEditorChange = (closingNote, editor) => {
+    setJob({ ...job, closingNote: closingNote });
+  };
 
   return (
     // Job Title
@@ -62,73 +55,30 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
         <h4>{job.title}</h4>
 
         <form onSubmit={onSubmit} className="form-container">
-          {/* Title Row */}
-          <div className="row">
-            {user.role === "owner" && (
-              <div className="input-field col s6 m6">
-                <select onChange={setCSelect} name="cSelect">
-                  <option value="" disabled>
-                    Choose a Contractor
-                  </option>
-                  {user.connections ? (
-                    user.connections.map((connection) => (
-                      <option key={connection.id} value={connection.id}>
-                        {connection.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option>
-                      <p>You have no contractors</p>{" "}
-                    </option>
-                  )}
-                </select>
-                <label htmlFor="cSelect">Contractor</label>
-              </div>
-            )}
-          </div>{" "}
           {/* Due Date and Time */}
           <div className="row">
             <div className="col s4">
-              <input
-                type="date"
-                value={job.dueDate}
-                className="datepiker"
-                name="dueDate"
-                onChange={onChange}
-              />
-              <label className="active" htmlFor="dueDate">
-                Due Date
-              </label>
+              Due Date: <span>{job.dueDate.substring(0, 10)}</span>
             </div>
             {/* Urgent */}
-            <div className="switch left">
-              <label>
-                Normal
-                <input
-                  type="checkbox"
-                  name="urgent"
-                  value={!job.urgent}
-                  onChange={onChange}
-                />
-                <span className="lever"></span>
-                Urgent
-              </label>
+            <div className="col s4">
+              {job.urgent === "on" && (
+                <span
+                  data-badge-caption="urgent"
+                  className="new badge red left"
+                ></span>
+              )}
+              <span
+                data-badge-caption={job.status}
+                className="new badge red left"
+              ></span>
             </div>
+            <div className="col s4"></div>
           </div>{" "}
           {/* Content */}
           <div className="row">
-            <div className="input-field col s12">
-              <textarea
-                name="content"
-                id="content"
-                value={job.content}
-                className="materialize-textarea"
-                onChange={onChange}
-              ></textarea>
-              <label className="active" htmlFor="content">
-                Job Details
-              </label>
-            </div>
+            <span>Job Details</span> 
+            <div className="input-field col s12 align-right">{job.content}</div>
           </div>
           {/* displaying job files*/}
           <ul className="collapsible">
@@ -140,11 +90,19 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 <div className="collection">
                   <ul>
                     {job.filesData.map((file) => (
-                      <li key={uuid()}>
-                        <div className="collection-item">
-                          <span>
-                            {file.name} <span className="badge green">Ok</span>
-                          </span>
+                      <li key={file.Key}>
+                        <div key={file.Key} className="collection-item">
+                          <a
+                            href={`https://bucketeer-129dc88f-2950-47ee-afbc-f78f0fce725d.s3.amazonaws.com/${file.Key}`}
+                            download
+                          >
+                            <span>
+                              {file.name}{" "}
+                              <span className="badge green">
+                                <i className="material-icons">download</i>
+                              </span>
+                            </span>
+                          </a>
                         </div>
                       </li>
                     ))}
@@ -153,20 +111,55 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
               </div>
             </li>
           </ul>
-          {/* File Uploads */}
-          <FileUpload
-            fList={job.filesData}
-            getData={(data) => setJob({ ...job, filesData: data })}
-          />
+          <div className="row">
+          <div className="input-field col s6 m6">
+                <select onChange={onChange} name="status">
+                <option value="" disabled selected>
+                    Set Status
+                  </option>
+                  <option value="In Progress" default>
+                    In Progress
+                  </option>
+                  <option value="Closed" >
+                    Close Job
+                  </option>
+                </select>
+                <label htmlFor="status">Status</label>
+              </div>
+                    {job.status === "Closed" &&          <div className="row">
+            <div className="input-field col s12">
+              <Editor
+                outputFormat="text"
+                onEditorChange={onEditorChange}
+                textareaName="closingNote"
+                initialValue="Add a closing note"
+                value="Add a closing note"
+                init={{
+                  height: 200,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | formatselect | bold italic backcolor | \
+             alignleft aligncenter alignright alignjustify | \
+             bullist numlist outdent indent | removeformat | help",
+                }}
+              />
+              <label className="active" htmlFor="closingNote">
+                Closing Note
+              </label>
+            </div></div>}</div>
           {/* Footer */}
-          {user.role === "owner" ? (
-            <div className="modal-footer">
+          <div className="modal-footer">
               <a
                 href="#!"
                 onClick={onSubmit}
                 className="waves-effect green waves-light btn-large"
               >
-                Save Job
+                Update Job
               </a>
               <a
                 href="#!"
@@ -176,15 +169,6 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 Job List
               </a>
             </div>
-          ) : (
-            <a
-              href="#!"
-              onClick={onClose}
-              className="waves-effect modal-close green waves-light btn-large"
-            >
-              Job List
-            </a>
-          )}
         </form>
       </div>
     </div>

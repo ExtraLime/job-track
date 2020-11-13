@@ -27,7 +27,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
             <a
               href={`#${user.role === "owner" ? "edit" : "view"}-job-modal`}
               className={`modal-trigger ${
-                job.urgent ? "red-text" : "blue-text"
+                job.urgent === 'on' ? "red-text" : "blue-text"
               }`}
               onClick={() => setCurrent(job)}
             >
@@ -43,7 +43,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
           <div className="row" style={{ marginBottom: "0px" }}>
             <div className="col s6 valign-wrapper" style={{ justifyContent: "space-between" }}>
               Status: <div><span className="new badge green"></span>
-              {job.urgent && (
+              {job.urgent === 'on' && (
                 <span
                   data-badge-caption="urgent"
                   className="new badge red"
@@ -122,7 +122,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
                  </div>
             <div className="col s6 valign-wrapper" style={{justifyContent:'space-between'}}>
               Job Files
-              <span className="badge" data-badge-caption="files">
+              <span className="badge" data-badge-caption={job.filesData.length === 1 ?"file":"files"}>
                 {job.filesData.length}
               </span>
             </div>
@@ -130,7 +130,21 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
         </li>
 
         {/* updates link row */}
-        <li className="collection-item">View Updates</li>
+        <li className="collection-item">
+          <div className="row" style={{ marginBottom: "0px" }}>
+            <a
+              href={'#add-update-modal'}
+              className={`modal-trigger ${
+                job.updates.length >1 ? "black-text" : "grey-text"
+              }`}
+              onClick={() => setCurrent(job)}
+            >
+              <span className="center-align card-title text-center">
+                <span style={{ margin: "0 0 0 0" }}>{user.role ==='owner' ? ("View"):("Add")} Updates</span>
+              </span>
+            </a>
+          </div>
+        </li>
 
       </ul>
     </li>

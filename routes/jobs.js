@@ -3,9 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk')
 const config = require('../config/default.json')
-const fs = require('fs');
-const fileType = require('file-type');
-const multiparty = require('multiparty');
+
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
@@ -13,7 +11,7 @@ const auth = require("../middleware/auth");
 
 const Job = require("../models/Job");
 const User = require("../models/User");
-const { kill } = require("process");
+
 
 AWS.config.update({
   accessKeyId: config.AWS_ACCESS_KEY_ID,
@@ -93,8 +91,8 @@ router.post(
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
 
-
-  const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate } = req.body;
+console.log(req.body)
+  const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate, closingNote, updates } = req.body;
 
   // Build contact object
   const jobFields = {};
@@ -107,6 +105,9 @@ router.put("/:id", auth, async (req, res) => {
   if (status) jobFields.status = status;
   if (closeDate) jobFields.closeDate = closeDate;
   if (urgent) jobFields.urgent = urgent;
+  if (updates) jobFields.updates = updates;
+  if (closingNote) jobFields.closingNote = closingNote;
+  
 
   try {
     let job = await Job.findById(req.params.id);

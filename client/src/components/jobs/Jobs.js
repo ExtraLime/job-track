@@ -7,6 +7,8 @@ import ActionButton from "../layout/ActionButton";
 import AddJobModal from "./AddJobModal";
 import EditJobModal from "../jobs/EditJobModal";
 import ViewJobModal from "../jobs/ViewJobModal";
+import AddUpdateModal from "../jobs/AddUpdateModal";
+
 
 
 
@@ -20,6 +22,7 @@ const Jobs = ({ user, jobs, getJobs }) => {
       <AddJobModal />
       <EditJobModal />
       <ViewJobModal />
+      <AddUpdateModal />
 
       <ul className="collection with-headers">
         <li className="collection-header">

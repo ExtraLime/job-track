@@ -93,7 +93,7 @@ Browse
             />
           </div>
         </div> {files ? (
-          <p>{files.length} files selected.</p>
+          <p>{files.length ===1 ? `${files.length} file`:`${files.length} files` } selected.</p>
         ) : (
           <p>0 files selected</p>
         )}
