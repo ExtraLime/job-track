@@ -38,7 +38,6 @@ const Login = ({
       login({ email, password });
       loadUser(history);
     }
-    console.log("Login submit");
   };
   return (
     <div className="container">

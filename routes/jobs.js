@@ -13,6 +13,7 @@ const auth = require("../middleware/auth");
 
 const Job = require("../models/Job");
 const User = require("../models/User");
+const { kill } = require("process");
 
 AWS.config.update({
   accessKeyId: config.AWS_ACCESS_KEY_ID,
@@ -28,23 +29,23 @@ router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     console.log(user.role)
-    if(user.role === 'contractor'){
-    console.log('contractor')
-// need a solution to store contractor information either here or pull it from state in jobitem
-      const jobs = await Job.find({ contractor: req.user.id  })
+    if (user.role === 'contractor') {
+      console.log('contractor')
+      // need a solution to store contractor information either here or pull it from state in jobitem
+      const jobs = await Job.find({ contractor: req.user.id })
       res.json(jobs);
 
-    }else if (user.role === 'owner') {
-    console.log('owner')
+    } else if (user.role === 'owner') {
+      console.log('owner')
 
-    const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
-  
-    res.json(jobs);
-    console.log(jobs)
+      const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
 
-  }else { res.status(500).send("NO User")}
-    
-    
+      res.json(jobs);
+      console.log(jobs)
+
+    } else { res.status(500).send("NO User") }
+
+
 
   } catch (error) {
     console.log(error);
@@ -60,9 +61,9 @@ router.get("/", auth, async (req, res) => {
 router.post(
   "/",
   [auth, [
-      check("title", "Name is Required").not().isEmpty(),
-      check("content", "Please provide a description of the job.").not().isEmpty(),
-    check('dueDate',"You must select a due date.").not().isEmpty()]],
+    check("title", "Name is Required").not().isEmpty(),
+    check("content", "Please provide a description of the job.").not().isEmpty(),
+    check('dueDate', "You must select a due date.").not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -70,7 +71,7 @@ router.post(
     }
     const { title, dueDate, content, filesData, contractor, urgent } = req.body;
 
-    let fullContractor = await User.findById(contractor.id).select(["name","email"])
+    let fullContractor = await User.findById(contractor.id).select(["name", "email"])
 
     try {
       newJob = new Job({
@@ -115,7 +116,7 @@ router.put("/:id", auth, async (req, res) => {
     // if (job.user.toString() !== req.user.id) {
     //   return res.status(401).json({ msg: "Not Authorized" });
     // }
-    
+
 
     job = await Job.findByIdAndUpdate(
       req.params.id,
@@ -135,7 +136,7 @@ router.put("/:id", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     let job = await Job.findById(req.params.id);
-    
+
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
     // Make validation later
@@ -151,99 +152,54 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-router.post('/fileUpload',auth, async (req, res) => {
+router.post('/fileUpload', auth, async (req, res) => {
 
   if (!req.files) {
-      return res.status(500).send({ msg: "file not found" })
+    return res.status(500).send({ msg: "file not found" })
   }
-      // accessing the file
+  // accessing the file
   const file = req.files.file;
   console.log(Object.keys(file))
   const s3 = new AWS.S3({
-    accessKeyId:config.AWS_ACCESS_KEY_ID,
+    accessKeyId: config.AWS_ACCESS_KEY_ID,
     secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
     region: 'us-east-1',
-    }
+    apiVersion: '2006-03-01'
+  }
   )
-  if(!s3){console.log("no s3 found")}
-    fileId = uuidv4()
+  if (!s3) { console.log("no s3 found") }
+
   const params = {
-    Key:    fileId,
-    Bucket: config.BUCKETEER_BUCKET_NAME,
-    Body:   file.data,
-    acl: 'public'
+
+    Key: 'public/' + uuidv4().toString().substring(0, 10) + file.name,
+    Bucket: config.AWS_BUCKET_NAME,
+    Body: file.data,
   };
- 
+
 
   s3.putObject(params, function put(err, data) {
     if (err) {
       console.log(err, err.stack);
       return;
     } else {
-      console.log("put " +data.ETag, params.Key);
+      console.log(data, params.Key);
     }
-  
+
     delete params.Body;
     s3.getObject(params, function put(err, data) {
       if (err) console.log(err, err.stack);
-      else     console.log(Object.keys(data));
-  
+      else console.log(Object.keys(data));
 
-      return res.send({_id:data.ETag, Key:params.Key, name:file.name})
+
+      return res.send({ Key: params.Key, name: file.name })
     });
 
-    
+
   });
-
-  //  mv() method places the file inside public directory
-  // file.mv(`${__dirname}/../client/files/${file.name}`, function (err) {
-  //     if (err) {
-  //         console.log(err)
-  //         return res.status(500).send({ msg: "Error occurred" });
-  //     }
-  //     // returning the response with file path and name
-  //     return res.send({_id:uuidv4(),name: file.name, path: `${__dirname}/../client/files/${file.name}`});
-  // });
-})
+});
 
 
-// router.post('/fileUpload',auth, async (req, res) => {
 
-//   if (!req.files) {
-//       return res.status(500).send({ msg: "file not found" })
-//   }
-//       // accessing the file
-//   const file = req.files.file;
-
-//   const s3 = new AWS.S3()
-// const uploadFile = (buffer, name, type) => {
-//   const params = {
-//     ACL: 'public-read',
-//     Body: buffer,
-//     Bucket: config.BUCKETEER_BUCKET_NAME,
-//     ContentType: type.mime,
-//     Key: `${name}.${type.ext}`,
-//   };
-//   return s3.upload(params).promise();
-// };
-// const form = new multiparty.Form();
-//   form.parse(req, async (error, fields, files) => {
-//     if (error) {
-//       return res.status(500).send(error);
-//     };
-//     try {
-//       const path = files.file[0].path;
-//       const buffer = fs.readFileSync(path);
-//       const type = await FileType.fromBuffer(buffer);
-//       const fileName = `bucketFolder/${Date.now().toString()}`;
-//       const data = await uploadFile(buffer, fileName, type);
-//       return res.status(200).send(data);
-//     } catch (err) {
-//       return res.status(500).send(err);
-//     }
-//   });
- 
-// })
 
 
 

@@ -46,12 +46,12 @@ const FileUpload = (props) => {
         .then((res) => {
           getFile({
             name: res.data.name,
-            path: res.data.path,
+            Key: res.data.Key,
             _id: res.data._id,
           });
           fileList.push({
             name: res.data.name,
-            path: res.data.path,
+            Key: res.data.Key,
             _id: res.data._id,
           });
           fileNames.push(res.data.name);

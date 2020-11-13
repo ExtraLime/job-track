@@ -6,7 +6,7 @@ import FileUpload from "./FileUpload";
 import { v4 as uuid } from "uuid";
 import { DatePicker } from "react-materialize";
 import { Editor } from "@tinymce/tinymce-react";
-
+import axios from "axios";
 
 const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
   console.log(user.connections);
@@ -19,15 +19,14 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     filesData: [],
     contractor: "",
   });
+
   const today = new Date();
+
   useEffect(() => {
     if (current) {
       setJob(current);
     }
   }, [current]);
-  const onSave = (e) => {
-    setJob({ ...job });
-  };
 
   const setCSelect = (e) => {
     const fullContractor = () => {
@@ -59,7 +58,6 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     clearCurrent();
   };
   const onUrgent = (e) => {
-
     setJob({ ...job, urgent: !job.urgent });
   };
   const onEditorChange = (content, editor) => {
@@ -109,12 +107,12 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           <div className="row">
             <div className="col s6">
               <DatePicker
-               options={{minDate:today}}
+                options={{ minDate: today }}
                 type="text"
                 className="text"
                 label="Due Date"
                 name="dueDate"
-                value={job.dueDate = ''? job.dueDate:job.dueDate}
+                value={(job.dueDate = "" ? job.dueDate : job.dueDate)}
                 id="dueDate"
                 onChange={(dueDate) => {
                   onChange({
@@ -134,7 +132,9 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                   type="checkbox"
                   name="urgent"
                   value={job.urgent}
-                  onChange={e => setJob({ ...job, [e.target.name]: !job.urgent })}
+                  onChange={(e) =>
+                    setJob({ ...job, [e.target.name]: !job.urgent })
+                  }
                   checked={job.urgent}
                 />
                 <span className="lever"></span>
@@ -145,7 +145,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           {/* Content */}
           <div className="row">
             <div className="input-field col s12">
-            <Editor
+              <Editor
                 outputFormat="text"
                 onEditorChange={onEditorChange}
                 textareaName="content"
@@ -180,11 +180,19 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 <div className="collection">
                   <ul>
                     {job.filesData.map((file) => (
-                      <li key={file._id}>
-                        <div className="collection-item">
-                          <a href={`s3://bucketeer-1806fb4e-1442-4819-9b7d-74b569ee0938/${file.Key}`} download><span>
-                            {file.name} <span className="badge green">ok</span>
-                          </span></a>
+                      <li key={file.Key}>
+                        <div key={file.Key} className="collection-item">
+                          <a
+                            href={`https://bucketeer-129dc88f-2950-47ee-afbc-f78f0fce725d.s3.amazonaws.com/${file.Key}`}
+                            download
+                          >
+                            <span>
+                              {file.name}{" "}
+                              <span className="badge green">
+                                <i className="material-icons">download</i>
+                              </span>
+                            </span>
+                          </a>
                         </div>
                       </li>
                     ))}
@@ -228,6 +236,7 @@ const mapStateToProps = (state) => ({
   current: state.jobs.current,
   user: state.auth.user,
 });
-export default connect(mapStateToProps, { updateJob, clearCurrent })(
-  EditJobModal
-);
+export default connect(mapStateToProps, {
+  updateJob,
+  clearCurrent,
+})(EditJobModal);

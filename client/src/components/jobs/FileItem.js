@@ -1,6 +1,12 @@
 import React from "react";
+import { connect } from 'react-redux';
+
 
 const FileItem = (file) => {
+
+    const genDl = (key) => {
+        
+    }
   return (
     <li key={file._id}>
       <div className="collection-item">
@@ -11,5 +17,8 @@ const FileItem = (file) => {
     </li>
   );
 };
+const mapStateToProps = ({
+    user: state.auth.user
+})
 
-export default FileItem;
+export default connect(mapStateToProps, {genDl})(FileItem);
