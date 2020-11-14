@@ -9,12 +9,19 @@ import ActionButton from "../layout/ActionButton";
 import { v4 as uuid } from "uuid";
 
 
-const Contractors = ({ user }) => {
+const Contractors = ({ user, jobs }) => {
   const [connections, setConnections] = useState([...user.connections]);
   const [contractors, setContractors] = useState([]);
 
+  // creates object job count per connection
+  const jobCounts = jobs.map(job => job.contractor).reduce(
+    (map, value) => { map[value] = (map[value] || 0) + 1; return map },
+    {}
+  )
+
   useEffect(() => {
     setContractors([contractors]);
+
     // eslint-disable-next-line
   }, []);
   return (
@@ -34,7 +41,7 @@ const Contractors = ({ user }) => {
         </li>
         {connections && connections.length > 0 ? (
           connections.map((connection) => (
-            <ContractorItem key={connection.id} contractor={connection} />
+            <ContractorItem key={connection.id} contractor={connection} counts={jobCounts[connection.id]?jobCounts[connection.id]:0} />
           ))
         ) : (
           <p>No Contractors to Show</p>
@@ -46,6 +53,7 @@ const Contractors = ({ user }) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  jobs: state.jobs.jobs
 });
 
 export default connect(mapStateToProps, {})(Contractors);

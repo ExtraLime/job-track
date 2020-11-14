@@ -2,10 +2,10 @@ import React from "react";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { deleteJob, setCurrent, clearCurrent } from "../../actions/jobActions";
+import { deleteJob, setCurrent } from "../../actions/jobActions";
 import M from "materialize-css/dist/js/materialize.min.js";
 
-const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
+const JobItem = ({ user, job, deleteJob, setCurrent }) => {
   const contractor =
     user.role === "owner"
       ? user.connections.filter(
@@ -42,7 +42,11 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
         <li className="collection-item">
           <div className="row" style={{ marginBottom: "0px" }}>
             <div className="col s6 valign-wrapper" style={{ justifyContent: "space-between" }}>
-              Status: <div><span className="new badge green"></span>
+              Status: 
+              <div>
+               {job.status === 'NEW' ? <span data-badge-caption='NEW' className="new badge green"></span>:
+               job.status === 'In Progress'? <span data-badge-caption='In Progress' className="new badge orange"></span>:
+               <span data-badge-caption='Closed' className="new badge red"></span>}
               {job.urgent === 'on' && (
                 <span
                   data-badge-caption="urgent"
@@ -135,12 +139,12 @@ const JobItem = ({ user, job, deleteJob, setCurrent, clearCurrent }) => {
             <a
               href={'#add-update-modal'}
               className={`modal-trigger ${
-                job.updates.length >1 ? "black-text" : "grey-text"
+                job.updates.length >0 ? "black-text" : "grey-text"
               }`}
               onClick={() => setCurrent(job)}
             >
               <span className="center-align card-title text-center">
-                <span style={{ margin: "0 0 0 0" }}>{user.role ==='owner' ? ("View"):("Add")} Updates</span>
+                <span style={{ margin: "0 0 0 0" }}>{user.role ==='owner' ? ("View"):("Add")} Updates ({job.updates.length})</span>
               </span>
             </a>
           </div>

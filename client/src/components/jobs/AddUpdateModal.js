@@ -9,7 +9,7 @@ import { Editor } from "@tinymce/tinymce-react";
 
 const AddUpdateModal = ({
   user,
-getJobs,
+  getJobs,
   updateJob,
   setAlert,
   removeAlert,
@@ -53,7 +53,12 @@ getJobs,
     setLoading(false);
   };
   const onEditorChange = (update, editor) => {
-    setUpdate({ by: user._id, date: Date.now(), message: update });
+    setUpdate({
+      name: user.name,
+      by: user._id,
+      date: Date.now(),
+      message: update,
+    });
     console.log(update);
   };
 
@@ -78,7 +83,31 @@ getJobs,
               <div className="collection">
                 {job.updates &&
                   job.updates.map((update) => (
-                    <div className="collection-item">{update.message}</div>
+                    <div key={uuid()}className="collection-item">
+                      <div className="row valign-wrapper">
+                        <div className="col s2 grey-text align-left">
+                          {" "}
+                          Update:
+                        </div>
+                        <div className="col s10 center-align black-text">
+                          {" "}
+                          {update.message}
+                        </div>
+                      </div>
+
+                      <div className="row valign-wrapper right-align">
+                        <div className="col s2 s8 grey-text align-left valign-wrapper"style={{justifyContent:'space-between'}}>
+                          {" "}
+                          by:
+                          <div className="chip right" style={{ margin: "0px" }}>
+                            {/* add from profile later */}
+                            <img src="images/yuna.jpg" alt=":-)"></img>
+                            {update.name}
+                          </div>{" "}
+                          at: <div>{Date(update.date).substring(0, 24)}{" "}</div>
+                        </div>
+                      </div>
+                    </div>
                   ))}
               </div>
             </div>
@@ -147,6 +176,9 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
   current: state.jobs.current,
 });
-export default connect(mapStateToProps, { clearCurrent, updateJob, getJobs, setAlert })(
-  AddUpdateModal
-);
+export default connect(mapStateToProps, {
+  clearCurrent,
+  updateJob,
+  getJobs,
+  setAlert,
+})(AddUpdateModal);

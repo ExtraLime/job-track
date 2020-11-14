@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import { clearCurrent, updateJob } from "../../actions/jobActions";
-import FileUpload from "./FileUpload";
 import { v4 as uuid } from "uuid";
 import { Editor } from "@tinymce/tinymce-react";
 
@@ -32,7 +31,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
     if (job.title === "" || job.content === "" || job.dueDate === "") {
       M.toast({ html: "Title, Due Date and Details are Required" });
     } else {
-      const date = Date.now();
+      
       setJob({ ...job, lastUpdate: { by: user._id, date: Date.now() } });
       updateJob(job);
       M.toast({ html: "Document Saved" });
@@ -70,7 +69,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
               )}
               <span
                 data-badge-caption={job.status}
-                className="new badge red left"
+                className={`new badge ${job.status === 'NEW'? 'green':job.status==='In Progress'? 'orange':'red'} left`}
               ></span>
             </div>
             <div className="col s4"></div>
@@ -114,10 +113,10 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
           <div className="row">
           <div className="input-field col s6 m6">
                 <select onChange={onChange} name="status">
-                <option value="" disabled selected>
+                <option value='' disabled default>
                     Set Status
                   </option>
-                  <option value="In Progress" default>
+                  <option value="In Progress" >
                     In Progress
                   </option>
                   <option value="Closed" >

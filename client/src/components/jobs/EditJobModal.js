@@ -44,7 +44,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     if (job.title === "" || job.content === "" || job.dueDate === "") {
       M.toast({ html: "Title, Due Date and Details are Required" });
     } else {
-      const date = Date.now();
+     
       setJob({ ...job, lastUpdate: { by: user._id, date: Date.now() } });
       updateJob(job);
       M.toast({ html: "Document Saved" });
@@ -86,13 +86,11 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
             {user.role === "owner" && (
               <div className="input-field col s6 m6">
                 <select onChange={setCSelect} name="cSelect">
-                  <option value="" disabled>
-                    Choose a Contractor
-                  </option>
                   {user.connections ? (
                     user.connections.map((connection) => (
+                      
                       <option key={connection.id} value={connection.id}>
-                        {connection.name}
+                        {connection.name} 
                       </option>
                     ))
                   ) : (

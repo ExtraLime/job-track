@@ -1,33 +1,42 @@
 import React from "react";
-import Moment from 'react-moment'
+import Moment from "react-moment";
 import PropTypes from "prop-types";
-import { connect } from 'react-redux'
-import M from 'materialize-css/dist/js/materialize.min.js'
+import { connect } from "react-redux";
+import M from "materialize-css/dist/js/materialize.min.js";
 
-
-
-const ContractorItem = ({contractor}) => {
-    
+const ContractorItem = ({ contractor, counts }) => {
   return (
-    <li key={contractor.id}className="collection-item">
-      <div>
-        <span className="black-text">
-          <span className="black-text">{contractor.name} </span> <br/>
-          <span className="black-text">Total jobs with you: "get number" </span><br/>
-            Contact: {contractor.email}
-           
-          {/* <Moment format="MMMM Do YYYY, h:mm:ss a">{contractor.date}</Moment> */}
-        </span>
-        <a disabled href="#!" onClick={console.log("i was clicked")} className="secondary-content">
-            <i className="material-icons grey-text">person</i>
-        </a>
+    <li key={contractor.id} className="collection-item">
+      <div className="row" style={{ marginBottom: "0px" }}>
+        <span className="black-text">{contractor.name} </span>{" "}
+      </div>
+      <div className="row" style={{ marginBottom: "0px" }}>
+        {" "}
+        <div className="col s10 grey-text left-align">Total jobs with you: </div>
+        <div className="col s2 black-text right-align">{counts}</div>
+      </div>
+      <div className="row" style={{ marginBottom: "0px" }}>
+        {" "}
+        <div className="col s6 grey-text left-align">Contact: </div>
+        <div className="col s6 black-text right-align">{contractor.email}</div>
+      </div>
+      <div className="row valign-wrapper center-align" style={{ marginBottom: "0px" }}>
+        <div className="col s12 center-align">
+        <a
+        disabled
+        href="#!"
+        onClick={console.log("poof")}
+        className="secondary-content"
+      >
+        <i className="material-icons center grey-text">person</i>
+      </a>
+        </div>
       </div>
     </li>
   );
 };
 
-
-const mapStateToProps = state => ({
-  role: state.auth.role
-})
+const mapStateToProps = (state) => ({
+  role: state.auth.role,
+});
 export default connect(mapStateToProps)(ContractorItem);
