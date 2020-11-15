@@ -7,4 +7,4 @@ to run this developement:
 
 then
 
-`cd job-track && npm run dev.
+`cd job-track && npm run dev`
