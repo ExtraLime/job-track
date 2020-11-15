@@ -22,6 +22,7 @@ Users can register as an owner or a contractor.
  - configure errors and alerts
  - build out admin platform to add/delete from db
  - build testing
+ - add input validation, sanitization
 ## Known Issues
 - select elements do not set/reset properly in modals
 - adding update sets all dates to current update
