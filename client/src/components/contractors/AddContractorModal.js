@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getContractors } from "../../utils/getContractors";
@@ -42,7 +42,7 @@ const AddContractorModal = ({
     add([...user.connections, newConn]);
     // set selected to null
     setSelected("");
-    window.location.reload()
+    // window.location.reload()
   };
 
   return (

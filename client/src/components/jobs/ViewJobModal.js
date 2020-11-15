@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 import { clearCurrent, updateJob } from "../../actions/jobActions";
-import { v4 as uuid } from "uuid";
+
 import { Editor } from "@tinymce/tinymce-react";
 
 const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
@@ -142,9 +142,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
                     "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic backcolor | \
-             alignleft aligncenter alignright alignjustify | \
-             bullist numlist outdent indent | removeformat | help",
+                  "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                 }}
               />
               <label className="active" htmlFor="closingNote">

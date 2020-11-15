@@ -1,17 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-const AWS = require('aws-sdk')
-const config = require('../config/default.json')
-
+const { v4: uuidv4 } = require("uuid");
+const AWS = require("aws-sdk");
+const config = require("../config/default.json");
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
 
-
 const Job = require("../models/Job");
 const User = require("../models/User");
-
 
 AWS.config.update({
   accessKeyId: config.AWS_ACCESS_KEY_ID,
@@ -25,26 +22,21 @@ AWS.config.update({
 
 router.get("/", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
+    // find user
+    const user = await User.findById(req.user.id);
 
-    if (user.role === 'contractor') {
-
-      // need a solution to store contractor information either here or pull it from state in jobitem
-      const jobs = await Job.find({ contractor: req.user.id })
+    // check role and return all appropriate jobs
+    if (user.role === "contractor") {
+      const jobs = await Job.find({ contractor: req.user.id }).sort({
+        date: -1,
+      });
       res.json(jobs);
-
-    } else if (user.role === 'owner') {
-
-
+    } else if (user.role === "owner") {
       const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
-
       res.json(jobs);
-
-
-    } else { res.status(500).send("NO User") }
-
-
-
+    } else {
+      res.status(500).send("No such User");
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");
@@ -58,10 +50,16 @@ router.get("/", auth, async (req, res) => {
 
 router.post(
   "/",
-  [auth, [
-    check("title", "Name is Required").not().isEmpty(),
-    check("content", "Please provide a description of the job.").not().isEmpty(),
-    check('dueDate', "You must select a due date.").not().isEmpty()]],
+  [
+    auth,
+    [
+      check("title", "Name is Required").not().isEmpty(),
+      check("content", "Please provide a description of the job.")
+        .not()
+        .isEmpty(),
+      check("dueDate", "You must select a due date.").not().isEmpty(),
+    ],
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -69,11 +67,20 @@ router.post(
     }
     const { title, dueDate, content, filesData, contractor, urgent } = req.body;
 
-    let fullContractor = await User.findById(contractor.id).select(["name", "email"])
+    let fullContractor = await User.findById(contractor.id).select([
+      "name",
+      "email",
+    ]);
 
     try {
       newJob = new Job({
-        owner: req.user.id, title, dueDate, content, urgent, filesData, contractor: fullContractor
+        owner: req.user.id,
+        title,
+        dueDate,
+        content,
+        urgent,
+        filesData,
+        contractor: fullContractor,
       });
 
       const job = await newJob.save();
@@ -86,13 +93,23 @@ router.post(
   }
 );
 
-// @route POST api/contacts/:id
-// @desc  Add new user contact
+// @route PUT api/jobs/:id
+// @desc  Edit job
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
-
-  console.log(req.body)
-  const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate, closingNote, updates } = req.body;
+  const {
+    title,
+    contractor,
+    lastUpdate,
+    status,
+    urgent,
+    dueDate,
+    content,
+    filesData,
+    closeDate,
+    closingNote,
+    updates,
+  } = req.body;
 
   // Build contact object
   const jobFields = {};
@@ -108,16 +125,14 @@ router.put("/:id", auth, async (req, res) => {
   if (updates) jobFields.updates = updates;
   if (closingNote) jobFields.closingNote = closingNote;
 
-
   try {
     let job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
-    // Make contact is users contact
-    // if (job.user.toString() !== req.user.id) {
-    //   return res.status(401).json({ msg: "Not Authorized" });
-    // }
-
+    // Make sure the requesting user is authorized to change the job
+    if ([job.owner, job.contractor].includes(req.user.id)) {
+      return res.status(401).json({ msg: "Not Authorized" });
+    }
 
     job = await Job.findByIdAndUpdate(
       req.params.id,
@@ -131,8 +146,8 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
-// @route DELETE api/contacts/:id
-// @desc  Add new user contact
+// @route DELETE api/job/:id
+// @desc  delete a job
 // @access  Private
 router.delete("/:id", auth, async (req, res) => {
   try {
@@ -140,10 +155,10 @@ router.delete("/:id", auth, async (req, res) => {
 
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
-    // Make validation later
-    // if (job.user.toString() !== req.user._id) {
-    //   return res.status(401).json({ msg: "Not Authorized" });
-    // }
+    // Validate ownership
+    if ([job.owner, job.contractor].includes(req.user.id)) {
+      return res.status(401).json({ msg: "Not Authorized" });
+    }
 
     await Job.findByIdAndRemove(req.params.id);
     res.json({ msg: "Job Removed" });
@@ -153,30 +168,38 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-router.post('/fileUpload', auth, async (req, res) => {
+// @route POST api/jobs/fileUpload
+// @desc  uploads one file to bucketeer
+// @access  Private
 
+router.post("/fileUpload", auth, async (req, res) => {
   if (!req.files) {
-    return res.status(500).send({ msg: "file not found" })
+    return res.status(500).send({ msg: "file not found" });
   }
   // accessing the file
   const file = req.files.file;
-  console.log(Object.keys(file))
+  // instantiate an S3 instance
   const s3 = new AWS.S3({
     accessKeyId: config.AWS_ACCESS_KEY_ID,
     secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
-    region: 'us-east-1',
-    apiVersion: '2006-03-01'
+    region: "us-east-1",
+    apiVersion: "2006-03-01",
+  });
+
+  if (!s3) {
+    res
+      .status(500)
+      .send(
+        "Sorry, there seems to be a problem with your storage hosting service"
+      );
   }
-  )
-  if (!s3) { console.log("no s3 found") }
 
   const params = {
-
-    Key: 'public/' + uuidv4().toString().substring(0, 10) + file.name,
+    // create random prefix for filename/key
+    Key: "public/" + uuidv4().toString().substring(0, 10) + file.name,
     Bucket: config.AWS_BUCKET_NAME,
     Body: file.data,
   };
-
 
   s3.putObject(params, function put(err, data) {
     if (err) {
@@ -191,18 +214,9 @@ router.post('/fileUpload', auth, async (req, res) => {
       if (err) console.log(err, err.stack);
       else console.log(Object.keys(data));
 
-
-      return res.send({ Key: params.Key, name: file.name })
+      return res.status(200).send({ Key: params.Key, name: file.name });
     });
-
-
   });
 });
-
-
-
-
-
-
 
 module.exports = router;

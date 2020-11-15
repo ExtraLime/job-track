@@ -1,19 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
+import React, { useState } from "react";
 import axios from "axios";
 
 const FileUpload = (props) => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]); // storing the uploaded file    // storing the recived file from backend
-  const [data, getFile] = useState({ name: "", path: "", _id: "" });
-  const [progress, setProgress] = useState(0); // progess bar
-  const el = useRef(); // accesing input element
-  const [filelist, setFilelist] = useState([]);
-
-  useEffect(() => {
-    if (props.fList) {
-    }
-  });
+  const [progress, setProgress] = useState(0); // progress bar
+  const [filelist, setFilelist] = useState([]); // 
 
   const clearUpload = () => {
     setFiles([]);
@@ -31,9 +23,8 @@ const FileUpload = (props) => {
     const fileNames = [];
     for (let i = 0; i < files.length; i++) {
       const formData = new FormData();
-      console.log(files[i]);
       formData.append("file", files[i]); // appending file
-
+// call the api with each file then call getData function props push file into state
       axios
         .post("api/jobs/fileUpload", formData, {
           onUploadProgress: (ProgressEvent) => {
@@ -44,11 +35,6 @@ const FileUpload = (props) => {
           },
         })
         .then((res) => {
-          getFile({
-            name: res.data.name,
-            Key: res.data.Key,
-            _id: res.data._id,
-          });
           fileList.push({
             name: res.data.name,
             Key: res.data.Key,
@@ -66,22 +52,14 @@ const FileUpload = (props) => {
 
   return (
     <div className="row">
-
       <div className="file-field input-field">
         <div className="btn green">
           <span>
-Browse
+            Browse
             <i className="material-icons right">search</i>
           </span>
-          <input
-            name="files"
-            type="file"
-            multiple
-            // ref={el}
-            onChange={handleChange}
-          />
+          <input name="files" type="file" multiple onChange={handleChange} />
         </div>
-
         <div className="">
           <div className="file-path-wrapper ">
             <input
@@ -92,8 +70,14 @@ Browse
               placeholder="Upload up to 5"
             />
           </div>
-        </div> {files ? (
-          <p>{files.length ===1 ? `${files.length} file`:`${files.length} files` } selected.</p>
+        </div>{" "}
+        {!loading && files ? (
+          <p>
+            {files.length === 1
+              ? `${files.length} file`
+              : `${files.length} files`}{" "}
+            selected.
+          </p>
         ) : (
           <p>0 files selected</p>
         )}
@@ -102,10 +86,7 @@ Browse
             <i className="material-icons right">file_upload</i>Upload
           </span>
         </div>
-       
       </div>
-
-
     </div>
   );
 };

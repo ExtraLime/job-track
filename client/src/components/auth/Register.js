@@ -17,6 +17,7 @@ const Register = (props) => {
       props.setAlert(props.error, "danger");
       props.clearErrors();
     }
+    
     // eslint-disable-next-line
   }, [props.error, props.isAuthenticated, props.history]);
 
@@ -56,14 +57,15 @@ const Register = (props) => {
       <form onSubmit={onSubmit} className="form-container">
         
       <div className="inrow">
-        <div className="row input-field col s12">
+        <div className="row">
+          <div className='input-field col s12'>
         <select
             name="role"
-            value=''
+            value={role}
             className="input-field col s12"
             onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
           >
-             <option value='' disabled >Choose Account Type</option>
+             <option selected value='' disabled >Choose Account Type</option>
             <option value="owner" >
               User{" "}
             </option>
@@ -71,8 +73,8 @@ const Register = (props) => {
               Contractor{" "}
             </option>
                  
-          </select><label>Choose Account Type</label>     
-          </div>
+          </select><label htmlFor='role'>Choose Account Type</label>     
+          </div></div>
         </div>
         
         <div className="inrow">

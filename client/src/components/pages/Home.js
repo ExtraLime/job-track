@@ -6,18 +6,10 @@ import Dashboard  from '../layout/Dashboard'
 
 const Home = (props) => {
     useEffect(() => {
-        if(!props.isAuthenticated){
+        if(!props.isAuthenticated || props.user.role === '' ){
             props.logout();
         }
     });
-
-    
-
-
-  const onLogout = () => {
-    props.logout();
-  };
-
   return (
     <Fragment>
       <Dashboard />

@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
-import { connect } from 'react-redux'
+
 import Jobs from '../jobs/Jobs'
-import EditJobModal from '../jobs/EditJobModal'
+
 import "materialize-css/dist/css/materialize.min.css";
 import M from "materialize-css/dist/js/materialize.min.js";
 

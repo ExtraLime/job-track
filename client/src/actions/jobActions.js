@@ -1,8 +1,4 @@
 import axios from "axios";
-import setAuthToken from '../utils/setAuthToken'
-import { Redirect } from 'react-router-dom'
-import React from 'react'
-
 
 import {
   ADD_JOB,
