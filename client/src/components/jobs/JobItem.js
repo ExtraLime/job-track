@@ -12,7 +12,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent }) => {
           (connection) => connection.id === job.contractor
         )
       : user.connections.filter((connection) => connection.id === job.owner);
-  console.log(contractor);
+
   const onDelete = () => {
     deleteJob(job._id);
     M.toast({ html: "Job Deleted" });

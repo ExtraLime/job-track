@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
 
@@ -129,17 +129,16 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
                 className="text"
                 label="Due Date"
                 name="dueDate"
+                readOnly
                 value={
-                  (job.dueDate = ""
-                    ? job.dueDate
-                    : job.dueDate)
-                }
+                  job.dueDate}
+                
                 id="dueDate"
                 onChange={(dueDate) => {
                   onChange({
                     target: {
                       name: "dueDate",
-                      value: new Date(dueDate),
+                      value: new Date(dueDate).toString(),
                     },
                   });
                 }}

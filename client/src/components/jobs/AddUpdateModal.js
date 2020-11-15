@@ -22,8 +22,6 @@ const AddUpdateModal = ({
     updates: [],
   });
 
-  const today = new Date();
-
   useEffect(() => {
     if (current) {
       setJob(current);

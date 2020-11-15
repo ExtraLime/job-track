@@ -101,14 +101,14 @@ export const getJobs = () => async (dispatch) => {
   export const updateJob = (job) => async (dispatch) => {
     try {
       setLoading();
-      console.log(job)
+ 
       const config = {
         headers: {
           "Content-Type":"application/json",
           "x-auth-token": localStorage.token,
         } 
       };
-      console.log(job._id)
+
       const res = await axios.put(`api/jobs/${job._id}`,job, config)   
       dispatch({
         type: EDIT_JOB,

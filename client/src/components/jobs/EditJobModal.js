@@ -112,13 +112,14 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                 className="text"
                 label="Due Date"
                 name="dueDate"
+                readOnly
                 value={(job.dueDate = "" ? job.dueDate : job.dueDate)}
                 id="dueDate"
                 onChange={(dueDate) => {
                   onChange({
                     target: {
                       name: "dueDate",
-                      value: new Date(dueDate),
+                      value: new Date(dueDate).toString(),
                     },
                   });
                 }}
