@@ -20,7 +20,10 @@ Users can register as an owner or a contractor.
  - require a closing note when setting status to close for contractors
  - BackEnd - prevent duplicate entries to contractor connections. user connections should throw error
  - configure errors and alerts
+ - build out admin platform to add/delete from db
  - build testing
 ## Known Issues
 - select elements do not set/reset properly in modals
 - adding update sets all dates to current update
+- if owner adds a third+ job, scrolling requires refresh, maybe create pages?
+- select does not show on registration page until refresh

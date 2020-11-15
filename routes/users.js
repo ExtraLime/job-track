@@ -75,7 +75,8 @@ router.post(
   }
 );
 
-// @desc UPDATE USER CONNECTIONS
+// @desc Connect two users
+
 // @route PUT api/users/:id
 // access private
 
@@ -89,8 +90,8 @@ router.put("/:id", auth, async (req, res) => {
     let user = await User.findById(req.params.id).select('-password');
     let newConnection = await User.findById(req.body.connection).select('-password');
     let connections = user.connections.map(conn => conn.id)
-    let userConns = newConnection.connections.map(uConn => uConn._id)
-
+    let userConns = newConnection.connections.map(conn => conn._id)
+console.log(newConnection,connections, userConns)
     //simple validation to avoid duplicates
     if (!user) return res.status(404).json({ msg: "User not found" });
     if (!newConnection) return res.status(404).json({msg:"Connection not found"});

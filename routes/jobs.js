@@ -26,20 +26,20 @@ AWS.config.update({
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
-    console.log(user.role)
+
     if (user.role === 'contractor') {
-      console.log('contractor')
+
       // need a solution to store contractor information either here or pull it from state in jobitem
       const jobs = await Job.find({ contractor: req.user.id })
       res.json(jobs);
 
     } else if (user.role === 'owner') {
-      console.log('owner')
+
 
       const jobs = await Job.find({ owner: req.user.id }).sort({ date: -1 });
 
       res.json(jobs);
-      console.log(jobs)
+
 
     } else { res.status(500).send("NO User") }
 
@@ -91,7 +91,7 @@ router.post(
 // @access  Private
 router.put("/:id", auth, async (req, res) => {
 
-console.log(req.body)
+  console.log(req.body)
   const { title, contractor, lastUpdate, status, urgent, dueDate, content, filesData, closeDate, closingNote, updates } = req.body;
 
   // Build contact object
@@ -107,7 +107,7 @@ console.log(req.body)
   if (urgent) jobFields.urgent = urgent;
   if (updates) jobFields.updates = updates;
   if (closingNote) jobFields.closingNote = closingNote;
-  
+
 
   try {
     let job = await Job.findById(req.params.id);
