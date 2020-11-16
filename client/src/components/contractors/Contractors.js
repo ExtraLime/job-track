@@ -2,11 +2,9 @@ import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import AddContractorModal from "./AddContractorModal";
 import ContractorItem from "../contractors/ContractorItem";
-import axios from "axios";
 
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
-import { v4 as uuid } from "uuid";
 
 const Contractors = ({ user, jobs }) => {
   const [connections, setConnections] = useState([...user.connections]);

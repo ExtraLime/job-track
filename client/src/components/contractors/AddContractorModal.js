@@ -6,14 +6,13 @@ import { updateConnections } from "../../actions/authActions";
 
 const AddContractorModal = ({
   updateConnections,
-  connections,
   add,
   user,
   getContractors,
 }) => {
   const [contractors, setContractors] = useState([]);
   const [selected, setSelected] = useState("");
-  const [connection, setConnection] = useState("");
+
 
   // Set list of contractor to list of contractors in the database
   useEffect(() => {
@@ -84,6 +83,13 @@ const AddContractorModal = ({
     </div>
   );
 };
+AddContractorModal.propTypes = {
+  updateConnections: PropTypes.func.isRequired,
+  getContractors: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  add: PropTypes.func.isRequired,
+
+}
 const modalStyle = {
   maxHeight: "50%",
   maxWidth: "50%",

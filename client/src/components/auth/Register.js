@@ -1,14 +1,11 @@
-import React, { useState, useEffect, Redirect } from "react";
-import { Link } from 'react-router-dom'
-
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 import { register, loadUser, clearErrors } from "../../actions/authActions";
 import { setAlert } from "../../actions/alertsActions";
 
 const Register = (props) => {
-
-
   useEffect(() => {
     if (props.isAuthenticated) {
       props.loadUser(props.history);
@@ -17,7 +14,7 @@ const Register = (props) => {
       props.setAlert(props.error, "danger");
       props.clearErrors();
     }
-    
+
     // eslint-disable-next-line
   }, [props.error, props.isAuthenticated, props.history]);
 
@@ -26,8 +23,8 @@ const Register = (props) => {
     password: "",
     name: "",
     password2: "",
-    role: "",
-    connections:[],
+    role: "owner",
+    connections: [],
   });
   const { name, email, role, password, password2, connections } = user;
 
@@ -45,7 +42,6 @@ const Register = (props) => {
         password,
         role,
         connections,
-        
       });
     }
   };
@@ -56,27 +52,7 @@ const Register = (props) => {
       </h4>
       <form onSubmit={onSubmit} className="form-container">
         
-      <div className="inrow">
-        <div className="row">
-          <div className='input-field col s12'>
-        <select
-            name="role"
-            value={role}
-            className="input-field col s12"
-            onChange={(e) => setUser({...user, [e.target.name]: e.target.value})}
-          >
-             <option selected value='' disabled >Choose Account Type</option>
-            <option value="owner" >
-              User{" "}
-            </option>
-            <option value="contractor" >
-              Contractor{" "}
-            </option>
-                 
-          </select><label htmlFor='role'>Choose Account Type</label>     
-          </div></div>
-        </div>
-        
+
         <div className="inrow">
           <div className="row input-field">
             <label htmlFor="name">Name</label>
@@ -136,8 +112,23 @@ const Register = (props) => {
             />
           </div>
         </div>
-
-
+        <div className="row">
+          <div className="input-field col s12">
+            <span>I want a contractor account</span>
+            <p>
+              <label>
+                <input
+                  name="role"
+                  value={role === "owner" ? "contractor" : "owner"}
+                  onChange={onChange}
+                  type="checkbox"
+                  className="filled-in"
+                />
+                <span className={role === 'contractor'?'black-text':'grey-text'} >Contractor</span>
+              </label>
+              </p> 
+          </div>
+        </div>
         <button
           type="submit"
           value="Register"
@@ -147,7 +138,9 @@ const Register = (props) => {
           Register
         </button>
       </form>
-      <span style={{margin:"20px"}}>Already Registered? <Link to='/login'> Login Here</Link></span>
+      <span style={{ margin: "20px" }}>
+        Already Registered? <Link to="/login"> Login Here</Link>
+      </span>
     </div>
   );
 };

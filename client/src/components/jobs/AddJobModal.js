@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import M from "materialize-css/dist/js/materialize.min.js";
 import { connect } from "react-redux";
-
+import PropTypes from "prop-types";
 import { DatePicker } from "react-materialize";
 import { addJob, clearCurrent, getJobs } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
-import { setAlert } from "../../actions/alertsActions";
+
 import { v4 as uuid } from "uuid";
 import { Editor } from "@tinymce/tinymce-react";
 
-const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAlert }) => {
+const AddJobModal = ({ user, addJob, getJobs }) => {
   const [loading, setLoading] = useState("");
   const [jobStatus, setJobStatus] = useState(false);
   const [job, setJob] = useState({
@@ -22,13 +22,12 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
   });
   const today = new Date();
 
-
   const onChange = (e) => setJob({ ...job, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     setJob({
       title: "",
-      urgent: 'off',
+      urgent: "off",
       dueDate: "",
       content: "",
       filesData: [],
@@ -70,10 +69,10 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
     setJob({ ...job, content: content });
   };
   const onUrgent = (e) => {
-    job.urgent === 'off' ?
-    setJob({ ...job, urgent: 'on' }):
-    setJob({ ...job, urgent: 'off' })
-    console.log(job)
+    job.urgent === "off"
+      ? setJob({ ...job, urgent: "on" })
+      : setJob({ ...job, urgent: "off" });
+    console.log(job);
   };
   const onClose = (e) => {
     setJobStatus(false);
@@ -124,15 +123,13 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
           <div className="row">
             <div className="col s6">
               <DatePicker
-                options={{ minDate: today, format:'MM DD YYYY' }}
+                options={{ minDate: today, format: "MM DD YYYY" }}
                 type="text"
                 className="text"
                 label="Due Date"
                 name="dueDate"
                 readOnly
-                value={
-                  job.dueDate}
-                
+                value={job.dueDate}
                 id="dueDate"
                 onChange={(dueDate) => {
                   onChange({
@@ -153,7 +150,7 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
                   name="urgent"
                   value={job.urgent}
                   onChange={onUrgent}
-                  checked={job.urgent==='off'? (false):(true)}
+                  checked={job.urgent === "off" ? false : true}
                 />
                 <span className="lever"></span>
                 Urgent
@@ -178,9 +175,7 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
                     "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic backcolor | \
-             alignleft aligncenter alignright alignjustify | \
-             bullist numlist outdent indent | removeformat | help",
+                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                 }}
               />
               <label htmlFor="content">Job Details</label>
@@ -212,7 +207,7 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
           {/* File Uploads */}
           <FileUpload getData={(data) => setJob({ ...job, filesData: data })} />
           {/* Save Close and clear job */}
-          <div className="modal-footer">
+       {!loading &&   <div className="modal-footer">
             {" "}
             {jobStatus ? (
               <a
@@ -231,11 +226,16 @@ const AddJobModal = ({ user, addJob, getJobs, clearCurrent, setAlert, removeAler
                 Create Job<i className="material-icons left">add</i>
               </a>
             )}
-          </div>
+          </div>}
         </form>
       </div>
     </div>
   );
+};
+AddJobModal.propTypes = {
+  user: PropTypes.object.isRequired,
+  addJob: PropTypes.func.isRequired,
+  getJobs: PropTypes.func.isRequired,
 };
 
 const modalStyle = {
@@ -246,6 +246,6 @@ const mapStateToProps = (state) => ({
   error: state.error,
   user: state.auth.user,
 });
-export default connect(mapStateToProps, {getJobs, clearCurrent, addJob, setAlert })(
+export default connect(mapStateToProps, { getJobs, clearCurrent, addJob })(
   AddJobModal
 );

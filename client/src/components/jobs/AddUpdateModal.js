@@ -141,7 +141,7 @@ const AddUpdateModal = ({
             </div>
           )}
 
-          <div className="modal-footer">
+          {!loading && <div className="modal-footer">
             {user.role === "contractor" && (
               <a
                 href="#!"
@@ -158,7 +158,7 @@ const AddUpdateModal = ({
             >
               Close<i className="material-icons left">close</i>
             </a>
-          </div>
+          </div>}
         </form>
       </div>
     </div>

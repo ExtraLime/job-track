@@ -150,7 +150,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
               </label>
             </div></div>}</div>
           {/* Footer */}
-          <div className="modal-footer">
+{!loading &&          <div className="modal-footer">
               <a
                 href="#!"
                 onClick={onSubmit}
@@ -165,7 +165,7 @@ const ViewJobModal = ({ user, updateJob, clearCurrent, current }) => {
               >
                 Job List
               </a>
-            </div>
+            </div>}
         </form>
       </div>
     </div>

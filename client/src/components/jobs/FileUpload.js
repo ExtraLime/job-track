@@ -31,6 +31,7 @@ const FileUpload = (props) => {
             let progress =
               Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100) +
               "%";
+              
             setProgress(progress);
           },
         })
@@ -47,11 +48,15 @@ const FileUpload = (props) => {
         .catch((err) => console.log(err));
     }
     setLoading(false);
+    setProgress('0%')
     clearUpload();
   };
 
   return (
     <div className="row">
+        <div className="progress" style={{width:`${progress}`}}>${progress}
+      <div className="determinate" ></div>
+  </div>
       <div className="file-field input-field">
         <div className="btn green">
           <span>

@@ -8,7 +8,6 @@ import {
   GET_JOBS,
   CLEAR_CURRENT,
   JOBS_ERROR,
-  CLEAR_ERRORS,
   SEARCH_JOBS,
   SET_LOADING
 } from "./types";
@@ -127,17 +126,6 @@ export const getJobs = () => async (dispatch) => {
       });
     } catch (error) {
       dispatch({ type: JOBS_ERROR, payload: error.response.statusText });
-    }
-  };
-
-   // Search Jobs
-   export const searchContractors = (text) => async (dispatch) => {
-    try {
-      setLoading();
-      const res = await fetch(`api/users/contractors?q=${text}`);
-      const data = await res.json();
-    } catch (error) {
-      console.log(error)
     }
   };
   

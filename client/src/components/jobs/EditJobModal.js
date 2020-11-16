@@ -5,6 +5,7 @@ import { clearCurrent, updateJob } from "../../actions/jobActions";
 import FileUpload from "./FileUpload";
 import { DatePicker } from "react-materialize";
 import { Editor } from "@tinymce/tinymce-react";
+import PropTypes from "prop-types";
 
 
 const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
@@ -160,9 +161,9 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
                     "insertdatetime media table paste code help wordcount",
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic backcolor | \
-             alignleft aligncenter alignright alignjustify | \
-             bullist numlist outdent indent | removeformat | help",
+                    "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+             
+             
                 }}
               />
               <label className="active" htmlFor="content">
@@ -206,7 +207,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
             fList={job.filesData}
             getData={(data) => setJob({ ...job, filesData: data })}
           />
-          <div className="modal-footer">
+      { !loading &&   <div className="modal-footer">
             <a
               href="#!"
               onClick={onSubmit}
@@ -221,12 +222,19 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
             >
               Job List
             </a>
-          </div>
+          </div>}
         </form>
       </div>
     </div>
   );
 };
+
+EditJobModal.propTypes = {
+  user: PropTypes.object.isRequired,
+  updateJob: PropTypes.func.isRequired,
+  clearCurrent: PropTypes.func.isRequired, 
+  current: PropTypes.object
+}
 const modalStyle = {
   width: "75%",
   maxHeight: "75%",
