@@ -7,7 +7,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_ERRORS,
-  UPDATE_USER
+  UPDATE_USER,
 } from "../actions/types";
 
 const user = JSON.parse(localStorage.getItem("user"));

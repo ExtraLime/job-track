@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const config = require("config");
+const { v4: uuidv4 } = require("uuid");
+const AWS = require("aws-sdk");
+const configAws = require("../config/default.json");
+const config = require("../config/default.json");
+
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -59,7 +63,7 @@ router.post(
       };
       jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        config.jwtSecret,
         {
           expiresIn: 360000,
         },
@@ -128,7 +132,46 @@ console.log(newConnection,connections, userConns)
   }
 });
 
+// @desc Upload an avatar
 
+// @route POST api/users/avatarUpload
+// access private
+
+router.post("/avatarUpload", auth, async (req, res) => {
+  const file = req.files.file;
+  const s3 = new AWS.S3({
+    accessKeyId: configAWS.AWS_ACCESS_KEY_ID,
+    secretAccessKey: configAWS.AWS_SECRET_ACCESS_KEY,
+    region: "us-east-1",
+    apiVersion: "2006-03-01",
+  });
+  const params = {
+    // create random prefix for filename/key
+    Key: "public/avatars/" + uuidv4().toString().substring(0, 10) + file.name,
+    Bucket: configAWS.AWS_BUCKET_NAME,
+    Body: file.data,
+  };
+  try {
+    s3.putObject(params, function put(err, data) {
+      if (err) {
+        console.log(err, err.stack);
+        return;
+      } else {
+        console.log(data, params.Key);
+      }
+  
+      delete params.Body;
+      s3.getObject(params, function put(err, data) {
+        if (err) console.log(err, err.stack);
+        else console.log(Object.keys(data));
+  
+        return res.status(200).send({ Key: params.Key, name: file.name });
+      });
+    });
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 // @desc Update user profile
 
@@ -136,9 +179,8 @@ console.log(newConnection,connections, userConns)
 // access private
   
 router.put("/profile/:id", auth, async (req, res) => {
-  console.log(req.body)
-
-  const { phone, name, username, email, userAvatar } = req.body
+ 
+  const { phone, name, username, email, userAvatar } = req.body.changes
   const userFields = {}
   if (name) userFields.name = name;
   if (email) userFields.email = email;
@@ -161,7 +203,7 @@ router.put("/profile/:id", auth, async (req, res) => {
       req.params.id,
       { $set: userFields },
       { new: true }
-    ).select("-password");
+    ).select(['username','name','email', 'userAvatar']);
     res.json(user);
   } catch (error) {
     console.error(error.message);

@@ -25,6 +25,7 @@ const FileUpload = (props) => {
       const formData = new FormData();
       formData.append("file", files[i]); // appending file
 // call the api with each file then call getData function props push file into state
+console.log(formData)
       axios
         .post("api/jobs/fileUpload", formData, {
           onUploadProgress: (ProgressEvent) => {

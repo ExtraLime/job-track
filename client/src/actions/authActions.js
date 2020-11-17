@@ -86,7 +86,7 @@ export const clearErrors = () => (dispatch) => {
 };
 
 
-export const updateConnections = (user) => async (dispatch) => {
+export const updateConnections = (user, connection) => async (dispatch) => {
   try {
     const config = {
       headers: {
@@ -94,7 +94,7 @@ export const updateConnections = (user) => async (dispatch) => {
         "x-auth-token": localStorage.token,
       } 
     };
-    const res = await axios.put(`api/users/${user._id}`,{user}, config)      
+    const res = await axios.put(`api/users/${user._id}`,{connection}, config)      
   
     dispatch({
       type: UPDATE_USER,

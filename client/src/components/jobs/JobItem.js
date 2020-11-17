@@ -104,7 +104,7 @@ const JobItem = ({ user, job, deleteJob, setCurrent }) => {
                   <div className="chip right">
                     {/* add from profile later */}
                     <img src="https://symbols.getvecta.com/stencil_32/1_user-management.8258f1cffe.svg" style={{marginLeft:'4px',borderRadius:'70%', width:'20px'}} alt=":-)"></img>
-                    {contractor[0].name}
+                    <span className="truncate">{contractor[0].name}</span>
                   </div>
                 ) : (
                   <span

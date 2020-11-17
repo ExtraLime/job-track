@@ -7,7 +7,7 @@ import Register from "./components/auth/Register";
 import Home from "./components/pages/Home";
 import Navbar from "./components/layout/Navbar";
 import Alerts from "./components/layout/Alerts";
-import Profile from './components/pages/Profile'
+import Profile from './components/pages/profile/Profile'
 
 
 
