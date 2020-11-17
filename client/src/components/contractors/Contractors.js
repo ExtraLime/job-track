@@ -6,7 +6,9 @@ import ContractorItem from "../contractors/ContractorItem";
 import "materialize-css/dist/css/materialize.min.css";
 import ActionButton from "../layout/ActionButton";
 
+
 const Contractors = ({ user, jobs }) => {
+  const [loading,setLoading] = useState(false)
   const [connections, setConnections] = useState([...user.connections]);
   const [contractors, setContractors] = useState([]);
 
@@ -19,24 +21,30 @@ const Contractors = ({ user, jobs }) => {
     }, {});
 
   useEffect(() => {
+    setLoading(true)
     setContractors([contractors]);
-
+    setLoading(false)
     // eslint-disable-next-line
   }, [connections]);
   return (
+    
     <Fragment>
+      
       <AddContractorModal connections={connections} add={setConnections} />
+  
       <ul className="collection with-headers">
+        
         <li className="collection-header">
           <span>
             <ActionButton
               side="left"
-              icon="search"
+              icon="add people"
               color="green"
               action="#add-contractor-modal"
             />
             <h4 className="center">Contractor List</h4>
           </span>
+          {!loading && connections && connections.length ===0 ? (<span className='red-text'>Add a Contractor here</span>):(<p>You have {connections.length} contractor{connections.length ===1?"":"s"}</p>)}
         </li>
         {connections && connections.length > 0 ? (
           connections.map((connection) => (
@@ -47,7 +55,7 @@ const Contractors = ({ user, jobs }) => {
             />
           ))
         ) : (
-          <p>No Contractors to Show</p>
+          <span className='grey-text'>No Contractors to show!</span>
         )}
       </ul>
     </Fragment>
