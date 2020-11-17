@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { logout } from "../../actions/authActions";
 import Dashboard  from '../layout/Dashboard'
 
+
 const Home = (props) => {
     useEffect(() => {
         if(!props.isAuthenticated || props.user.role === '' ){
@@ -13,6 +14,7 @@ const Home = (props) => {
   return (
     <Fragment>
       <Dashboard />
+ 
       </Fragment>
   );
 };

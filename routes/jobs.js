@@ -129,7 +129,7 @@ router.put("/:id", auth, async (req, res) => {
     let job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ msg: "Job not found" });
 
-    // Make sure the requesting user is authorized to change the job
+    // Make sure the requesting user is authorized to change the job ??
     if ([job.owner, job.contractor].includes(req.user.id)) {
       return res.status(401).json({ msg: "Not Authorized" });
     }

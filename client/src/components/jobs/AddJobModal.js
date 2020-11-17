@@ -83,7 +83,7 @@ const AddJobModal = ({ user, addJob, getJobs }) => {
     <div id="add-job-modal" className="modal" style={modalStyle}>
       <div className="modal-content">
         <h4>New Job</h4>
-        <form onSubmit={onSubmit} className="form-container">
+        <form  className="form-container">
           {/* Title row and contractor select */}
           <div className="row">
             <div className="input-field col s6 m6">

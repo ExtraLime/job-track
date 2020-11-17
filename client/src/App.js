@@ -7,6 +7,7 @@ import Register from "./components/auth/Register";
 import Home from "./components/pages/Home";
 import Navbar from "./components/layout/Navbar";
 import Alerts from "./components/layout/Alerts";
+import Profile from './components/pages/Profile'
 
 
 
@@ -28,6 +29,7 @@ const App = () => {
         <Alerts />
           <Switch>
             <PrivateRoute exact path="/" component={Home}></PrivateRoute>
+            <PrivateRoute exact path="/profile" component={Profile}></PrivateRoute>
             <Route exact path="/login" component={Login}></Route>
             <Route exact path="/register" component={Register}></Route>
           </Switch>

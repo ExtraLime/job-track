@@ -26,6 +26,19 @@ const UserSchema = mongoose.Schema({
         type: Array,
         required: true,
         default: []
+    },
+    username: {
+        type:String,
+        required:false
+    },
+    userAvatar:{
+        type: String,
+        required: true,
+        default:'https://symbols.getvecta.com/stencil_31/82_user-enterprise.deff5033b8.svg'
+    },
+    phone:{
+        type: String,
+        require:false
     }
 });
 

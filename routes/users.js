@@ -127,8 +127,47 @@ console.log(newConnection,connections, userConns)
     res.status(500).send("Server Error");
   }
 });
-  
 
+
+
+// @desc Update user profile
+
+// @route PUT api/users/:id
+// access private
+  
+router.put("/profile/:id", auth, async (req, res) => {
+  console.log(req.body)
+
+  const { phone, name, username, email, userAvatar } = req.body
+  const userFields = {}
+  if (name) userFields.name = name;
+  if (email) userFields.email = email;
+  if (userAvatar) userFields.userAvatar = userAvatar;
+  if (username) userFields.username = username;
+  if (phone) userFields.phone = phone;
+
+
+  // Build contact object
+  try {
+    // Find requesting userID as the parameter and
+    // Connection id in the body
+    // make a list of IDs
+    let user = await User.findById(req.params.id).select('-password');
+
+    //simple validation to avoid duplicates
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: userFields },
+      { new: true }
+    ).select("-password");
+    res.json(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 
 
@@ -146,5 +185,6 @@ router.get("/contractors", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
 
 module.exports = router;

@@ -30,9 +30,9 @@ const Navbar = ({ title, icon, logout, isAuthenticated, user }) => {
   );
   const userLinks = (
     <Fragment>
-       <li style={{ display:"inline",marginRight: "15px" }}> <a href="">     {" "}
+       <li style={{ display:"inline",marginRight: "15px" }}> <Link to='/profile'>     {" "}
         <i className="material-icons left">person</i> Hello {user && user.name}{" "}
-        </a></li>
+        </Link></li>
       <li>
         <a onClick={onLogout} href="#!">
           <i className="material-icons left">logout</i>Logout

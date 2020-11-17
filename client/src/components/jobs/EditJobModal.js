@@ -20,7 +20,6 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
     contractor: "",
   });
 
-  const today = new Date();
 
   useEffect(() => {
     if (current) {
@@ -73,7 +72,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
       <div className="modal-content">
         <h4>Edit Job</h4>
 
-        <form onSubmit={onSubmit} className="form-container">
+        <form className="form-container">
           {/* Title Row */}
           <div className="row">
             <div className="input-field col s6 m6">
@@ -108,7 +107,7 @@ const EditJobModal = ({ user, updateJob, clearCurrent, current }) => {
           <div className="row">
             <div className="col s6">
               <DatePicker
-                options={{ minDate: today }}
+                options={{ minDate: new Date() }}
                 type="text"
                 className="text"
                 label="Due Date"

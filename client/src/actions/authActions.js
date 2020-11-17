@@ -86,7 +86,7 @@ export const clearErrors = () => (dispatch) => {
 };
 
 
-export const updateConnections = (user, connection) => async (dispatch) => {
+export const updateConnections = (user) => async (dispatch) => {
   try {
     const config = {
       headers: {
@@ -94,7 +94,26 @@ export const updateConnections = (user, connection) => async (dispatch) => {
         "x-auth-token": localStorage.token,
       } 
     };
-    const res = await axios.put(`api/users/${user._id}`,{connection}, config)      
+    const res = await axios.put(`api/users/${user._id}`,{user}, config)      
+  
+    dispatch({
+      type: UPDATE_USER,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({ type: AUTH_ERROR, payload: error.response.data.msg });
+  }
+};
+
+export const updateUser = (user, changes) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type":"application/json",
+        "x-auth-token": localStorage.token,
+      } 
+    };
+    const res = await axios.put(`api/users/profile/${user._id}`,{changes}, config)      
   
     dispatch({
       type: UPDATE_USER,
