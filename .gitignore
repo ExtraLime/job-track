@@ -2,7 +2,7 @@ node_modules
 
 #DB creds
 
-config/default.json
+# config/default.json
 # config/production.json
 
 scratch.js
