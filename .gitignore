@@ -2,10 +2,13 @@ node_modules
 
 #DB creds
 
-config/default.json
-config/production.json
+
 
 scratch.js
 
 #upload testing
 client/files/*
+
+
+config/default.json
+config/production.json
