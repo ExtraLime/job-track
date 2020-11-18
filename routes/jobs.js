@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 const AWS = require("aws-sdk");
-const config = require("../config/default.json");
+const config = require("../config/production.json");
 
 const { check, validationResult } = require("express-validator");
 const auth = require("../middleware/auth");
