@@ -10,7 +10,10 @@ then
 `cd job-track && npm run dev`
 
 This demo app uses a MERN stack with a bucketeer bucket for file storage and download and eventually for image hosting. 
-All credentials stored in config/default.json (You need your own mongo URI and bucketeer(AWS) bucket).
+All credentials (mongoURI, s3,jwtsecret) stored in config/default.json (You need your own mongo URI and bucketeer(AWS) bucket).
+
+This project utilizes [MaterializeCSS](https://materializecss.com/), for quick light-weight clean front-end design based on Material-UI check it out.
+
 
 Users can register as an owner or a contractor.
 - Owners can create jobs
