@@ -1,7 +1,7 @@
 # Welecome to job-track
 #### a super light job-tracking app
 
-to run this developement:
+to run this in  development:
 
 `git clone https://www.github.com/ExtraLime/job-track.git`
 
