@@ -140,15 +140,15 @@ console.log(newConnection,connections, userConns)
 router.post("/avatarUpload", auth, async (req, res) => {
   const file = req.files.file;
   const s3 = new AWS.S3({
-    accessKeyId: configAWS.AWS_ACCESS_KEY_ID,
-    secretAccessKey: configAWS.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: config.AWS_ACCESS_KEY_ID,
+    secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
     region: "us-east-1",
     apiVersion: "2006-03-01",
   });
   const params = {
     // create random prefix for filename/key
     Key: "public/avatars/" + uuidv4().toString().substring(0, 10) + file.name,
-    Bucket: configAWS.AWS_BUCKET_NAME,
+    Bucket: config.AWS_BUCKET_NAME,
     Body: file.data,
   };
   try {
@@ -181,6 +181,7 @@ router.post("/avatarUpload", auth, async (req, res) => {
 router.put("/profile/:id", auth, async (req, res) => {
  
   const { phone, name, username, email, userAvatar } = req.body.changes
+  console.log(req.body.changes)
   const userFields = {}
   if (name) userFields.name = name;
   if (email) userFields.email = email;
@@ -204,6 +205,7 @@ router.put("/profile/:id", auth, async (req, res) => {
       { $set: userFields },
       { new: true }
     ).select(['username','name','email', 'userAvatar']);
+    console.log(user)
     res.json(user);
   } catch (error) {
     console.error(error.message);

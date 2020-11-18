@@ -6,7 +6,7 @@ import M from "materialize-css/dist/js/materialize.min.js";
 import axios from "axios";
 
 const Profile = ({ user, updateUser }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
   const [avatar, setAvatar] = useState({ raw: "", preview: "" });
   const [userData, setUserData] = useState({
     name: "",
@@ -44,28 +44,33 @@ const Profile = ({ user, updateUser }) => {
     e.preventDefault();
     if (userData.name === "" || userData.email === "") {
       M.toast({ html: "Name and Email Must be filled out" });
-    } else {
-      if (avatar.raw === "") {
-        updateUser(user, userData);
-      } else {
+    } else if (avatar.raw != "") {
+      setLoading(true);
         const formData = new FormData();
         formData.append("file", avatar.raw);
         console.log(formData);
+        console.log(loading)
         axios
           .post("api/users/avatarUpload", formData)
           .then((res) => {
-            console.log(res);
             setUserData({ ...userData, userAvatar: res.data.Key });
-            updateUser(user, userData);
-
             M.toast({ html: "Profile Updated" });
             console.log(userData.userAvatar);
+            console.log(loading)
+            
           })
           .catch((err) => console.log(err));
+          setLoading(false)
       }
+      setLoading(true);
+          updateUser(user, userData);
+          console.log(loading)
+setAvatar({ raw: "", preview: "" })
+setLoading(false)
     }
-    setLoading(false);
-  };
+//     
+
+  
   console.log(userData);
   return (
     <div className="container">
@@ -75,11 +80,11 @@ const Profile = ({ user, updateUser }) => {
       <div className="form-container"></div>
       {/* User Avatar Display*/}
       <div className="row" style={{ justifyContent: "center" }}>
-        <div className="col s4 offset-s4">
+        <div className="col s4 offset-s4 center-align" style={{display:"flex",justifyContent:'center'}}>
           <img
-            className="materialboxed center-align responsive-img"
+            className="materialboxed  responsive-img"
             alt="userAvatar"
-            style={{ borderRadius: "50%" }}
+            style={{ alignSelf:"center",borderRadius: "50%" }}
             width="225"
             src={avatar.preview === "" ? `https://bucketeer-129dc88f-2950-47ee-afbc-f78f0fce725d.s3.amazonaws.com/${userData.userAvatar}`:  avatar.preview }
           ></img>
@@ -103,7 +108,8 @@ const Profile = ({ user, updateUser }) => {
       </div>
 
       {/* User Name */}
-      <div className="row">
+      <div className="row" >
+      <span htmlFor="name">Your Name</span><br/>
         <input
           className="validate input-field col s4 offset-s4"
           type="text"
@@ -114,10 +120,11 @@ const Profile = ({ user, updateUser }) => {
 
           // data-length="10"
         />
-        <label htmlFor="name">Name</label>
+
       </div>
       {/* User Email */}
-      <div className="row">
+      <div className="row input-field col s4 offset-s4">
+      <span htmlFor="name">Email</span><br/>
         <input
           className="validate input-field col s4 offset-s4"
           type="email"
@@ -125,13 +132,11 @@ const Profile = ({ user, updateUser }) => {
           value={userData.email}
           onChange={onChange}
           required
-
-          // data-length="10"
         />
-        <label htmlFor="name">Email</label>
       </div>
       {/* User Phone */}
       <div className="row">
+      <span htmlFor="name">Phone (10 digit)</span><br/>
         <input
           className="validate input-field col s4 offset-s4"
           type="tel"
@@ -140,23 +145,17 @@ const Profile = ({ user, updateUser }) => {
           onChange={onChange}
           pattern="[0-9]{10}"
         />
-        <label htmlFor="phone">Phone</label>
       </div>
       {/* User username*/}
       <div className="row">
+      <span htmlFor="name">Username</span><br/>
         <input
           className="validate input-field col s4 offset-s4"
           type="text"
           name="username"
           value={userData.username}
           onChange={onChange}
-          required
-
-          // data-length="10"
         />
-        <label className="active" htmlFor="username">
-          Choose a User Name
-        </label>
       </div>
       {!loading && (
         <a

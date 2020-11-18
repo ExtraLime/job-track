@@ -113,7 +113,8 @@ export const updateUser = (user, changes) => async (dispatch) => {
         "x-auth-token": localStorage.token,
       } 
     };
-    const res = await axios.put(`api/users/profile/${user._id}`,{changes}, config)      
+    const res = await axios.put(`api/users/profile/${user._id}`,{changes}, config) 
+    console.log(res)     
   
     dispatch({
       type: UPDATE_USER,
