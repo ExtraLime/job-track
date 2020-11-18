@@ -1,8 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://lime:liqTYoxOAc0R6MCG@jobtrack.ojm2k.mongodb.net/jobtrack?retryWrites=true&w=majority",
-  "jwtSecret": "$hh!!!BQeye773",
-  "AWS_BUCKET_NAME": "bucketeer-129dc88f-2950-47ee-afbc-f78f0fce725d",
-  "AWS_SECRET_ACCESS_KEY": "Z2W4JsIkYOATX5ZozCBKmb9MN3xBj624SuiCKm8H",
-  "AWS_ACCESS_KEY_ID": "AKIAVVKH7VVUHRC3UIFS",
-  "AWS_REGION": "us-east-1"
-}
