@@ -1,5 +1,7 @@
 # Welecome to job-track
 #### a super light job-tracking app
+live demo
+[job-rak](https://job-trak.herokuapp.com/)
 
 to run this in  development:
 
