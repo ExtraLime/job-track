@@ -176,6 +176,7 @@ router.post("/fileUpload", auth, async (req, res) => {
   if (!req.files) {
     return res.status(500).send({ msg: "file not found" });
   }
+
   // accessing the file
   const file = req.files.file;
   // instantiate an S3 instance
